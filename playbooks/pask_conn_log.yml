@@ -1,0 +1,31 @@
+---
+- name: Conn log Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Conn Log Line Length
+    pask_conn_log:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      line_length: "3"
+
+  - name: Reset Conn Log Line Length
+    pask_conn_log:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      line_length: ""
+
+  - name: Delete Conn Log All
+    pask_conn_log:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      state: "absent"

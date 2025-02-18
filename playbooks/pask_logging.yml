@@ -1,0 +1,28 @@
+---
+- name: Logging Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Logging
+    pask_logging:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      facility: "local0"
+      level: "error"
+      buffer: "10"
+      server_status: "enable"
+      server:
+       - {ipaddr: "1.1.1.1", port: "5635", facility: [{facility: "all", level: "info", agent_facility: "ftp"}, {facility: "auth", level: "crit", agent_facility: "cron"}], description: "test1"}
+       - {ipaddr: "1.1.1.2", port: "5835", facility: [{facility: "daemon", level: "notice", agent_facility: "daemon"}, {facility: "kern", level: "warning", agent_facility: "mail"}], description: "test2"}
+
+  - name: Reset Logging
+    pask_logging:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

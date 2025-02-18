@@ -1,0 +1,22 @@
+---
+- name: Raid Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Raid
+    pask_raid:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      sync_speed: "1000"
+
+  - name: Reset Raid
+    pask_raid:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

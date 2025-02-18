@@ -1,0 +1,42 @@
+---
+- name: Dynamic Filter Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Dynamic Filter
+    pask_dynamic_filter:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      mode: "office365"
+      category: "optimize"
+      required: "true"
+      expressroute: "true"
+      tenant: "test"
+      endpoint_url: "example.com"
+      interval: "120"
+      status: "enable"
+      description: "test"
+
+  - name: Reload Dynamic Filter
+    pask_dynamic_filter:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      reload: "yes"
+
+  - name: Delete Dynamic Filter
+    pask_dynamic_filter:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

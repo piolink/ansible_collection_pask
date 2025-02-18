@@ -1,0 +1,32 @@
+---
+- name: Config Slot Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Config Slot
+    pask_config_slot:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "3"
+      server_type: "sftp"
+      host: "1.1.1.1"
+      port: "5105"
+      path: "hi"
+      user: "bang"
+      password: "admin1234"
+      interface: "mgmt"
+      description: "testing"
+
+  - name: Delete Config Slot
+    pask_config_slot:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "3"
+      state: "absent"

@@ -1,0 +1,30 @@
+---
+- name: Sflow Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Sflow
+    pask_sflow:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      status: "enable"
+      agent_ip: "1.1.1.1"
+      polling_interval: "100"
+      collector:
+        - ip: "1.1.1.1"
+          port: "8783"
+      sampling:
+        - port: "1"
+          sampling_rate: "2056"
+
+  - name: Reset Sflow
+    pask_sflow:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

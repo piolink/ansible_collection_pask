@@ -1,0 +1,31 @@
+---
+- name: Dynamic Proximity Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Dynamic Proximity
+    pask_dynamic_proximity:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      type: "snmp"
+      interval: "10"
+      oid: "1.3.6.1.2.1.7"
+      community: "test"
+      min_value: "3"
+      max_value: "5"
+      description: "test1"
+
+  - name: Delete Dynamic Proximity
+    pask_dynamic_proximity:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

@@ -6,7 +6,7 @@
   - piolink.pask
 
   tasks:
-  - name: Create snmp
+  - name: Set Snmp
     pask_snmp:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
@@ -19,16 +19,81 @@
         contact: "admin@piolink.com"
         location: "Korea"
       community:
-        - { name: "piolink", policy: "read-write", limit_oid: "1.1.1.1" }
-        - { name: "piolink2", policy: "read-only", limit_oid: "1.1.1.1" }
+        - name: "piolink"
+          policy: "read-write"
+          limit_oid:
+            - "1.3.6.1.2.1.7"
+            - "1.3.6.1.2.1.8"
       user:
-        - { name: "test1", sha_passwd: "tester123!@#"}
+        - name: "test1"
+          policy: "read-only"
+          sha_passwd: "tester123!@#"
       trap:
         link_up: "enable"
-        link_down: "disable"
+        link_down: "enable"
         failover: "enable"
         fan: "enable"
+        dom_all: "disable"
+        dom_temperature: "enable"
+        dom_voltage: "enable"
+        dom_current: "enable"
+        dom_tx_power: "enable"
+        dom_rx_power: "enable"
         cold_start: "enable"
+        management_cpu: "enable"
+        management_memory: "enable"
+        packet_cpu: "enable"
+        packet_memory: "enable"
+        log_storage: "enable"
+        health_check: "enable"
+        temperature: "enable"
+        power: "enable"
         host:
-          - {ip: "2.2.2.2", version: "3", user: "piolink", engine_id: "800007E5804089071BC6D10A41", aes_passwd: "Admin123$", sha_passwd: "Admin123$"}
-          - {ip: "3.3.3.3", version: "3", user: "piolink12", engine_id: "800007E5804089071BC6D10A41", aes_passwd: "Admin123$", sha_passwd: "Admin123$"}
+          - ip: "1.1.1.1"
+            version: "1"
+            community: "test1"
+            user: "piolink123"
+            agent_addr: "1.1.1.1"
+            engine_id: "700007E5804089071BC6D10A41"
+            sha_passwd: "Admin123$"
+            aes_passwd: "Admin123$"
+            description: "test1"
+      rmon:
+        trap_host:
+          - ip: "1.1.1.2"
+            community: "rmon1"
+        statistics:
+          - id: "10"
+            port: "ge1"
+            owner: "piolink1"
+        history:
+          - id: "20"
+            buckets: "10"
+            interval: "1000"
+            port: "ge3"
+            owner: "piolink3"
+        event:
+          - id: "30"
+            type: "log"
+            owner: "piolink5"
+            description: "testing1"
+        alarm:
+          - id: "10"
+            interval: "100"
+            startup_alarm: "rising"
+            sample_type: delta
+            rising:
+              threshold: "1"
+              event: "30"
+            falling:
+              threshold: "2"
+              event: "30"
+            owner: "piolink7"
+            variable_oid: "1.3.6.1.2.1.16.1.1.1.4.10"
+
+  - name: Reset Snmp
+    pask_snmp:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

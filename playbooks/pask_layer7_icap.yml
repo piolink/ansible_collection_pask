@@ -1,0 +1,42 @@
+---
+- name: Layer7 Icap Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Layer7 Icap
+    pask_layer7_icap:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      ip: "1.1.1.1"
+      port: "1565"
+      reqmod:
+        status: "enable"
+        ip: "1.2.3.4"
+        port: "1365"
+        uri: "test1"
+        failure_action: "return-error"
+        timeout: "5"
+        send_client_ip: "enable"
+      respmod:
+        status: "enable"
+        ip: "4.3.2.1"
+        port: "1465"
+        uri: "test2"
+        failure_action: "ignore"
+        timeout: "60"
+        send_server_ip: "enable"
+
+  - name: Delete Layer7 Icap
+    pask_layer7_icap:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

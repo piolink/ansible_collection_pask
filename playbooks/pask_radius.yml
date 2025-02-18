@@ -1,0 +1,34 @@
+---
+- name: Radius Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Radius
+    pask_radius:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      status: "enable"
+      primary_server: "1.1.1.1"
+      secondary_server: "1.1.1.2"
+      port: "2000"
+      secret: "test1234"
+      retry: "5"
+      timeout: "5"
+      console: "enable"
+      ssh: "enable"
+      telnet: "enable"
+      web: "enable"
+      prest_api: "disable"
+
+  - name: Reset Radius
+    pask_radius:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      state: "absent"

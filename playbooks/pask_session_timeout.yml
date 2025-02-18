@@ -1,0 +1,35 @@
+---
+- name: Session Timeout Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Session Timeout
+    pask_session_timeout:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      generic: "50"
+      icmp: "30"
+      icmpv6: "30"
+      udp: "30"
+      udp_stream: "200"
+      tcp_syn_sent: "30"
+      tcp_syn_recv: "30"
+      tcp_established: "5000"
+      tcp_fin_wait: "30"
+      tcp_close_wait: "30"
+      tcp_last_ack: "30"
+      tcp_wait: "30"
+      tcp_close: "30"
+      tcp_unassured: "30"
+
+  - name: ReSet Session Timeout
+    pask_session_timeout:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

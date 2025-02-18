@@ -27,6 +27,11 @@ def try_except(func):
         try:
             result = func(self, *args, **kwargs)
             return result
+        except ValueError as e:
+            result = dict()
+            result['failed'] = True
+            result['message'] = e.message
+            self.module.exit_json(**result)
         except Exception:
             result = dict()
             result['failed'] = True
@@ -37,19 +42,20 @@ def try_except(func):
 
 
 class PaskModule(object):
-    def __init__(self, name, module_args):
+    def __init__(self, name, module_args, required_if=None):
         self.module_args = module_args
         self.basic_module_args = dict(
             prest_ip=dict(type='str', required=True),
             prest_port=dict(type='str', required=True),
             user_id=dict(type='str', required=True),
-            user_pw=dict(type='str', required=True, no_log=True)
+            user_pw=dict(type='str', required=True, no_log=True),
+            state=dict(type='str', default="present",
+                       choices=['present', 'absent', 'command'])
         )
         self.param = None
-
         self.path_name = name
         self.data_name = name
-        self.init_ansible()
+        self.init_ansible(required_if)
         self.prest = PrestApi(self.module)
         self.set_param()
         self.exclude_params = [
@@ -59,8 +65,9 @@ class PaskModule(object):
         self.user_id = 'root'
         self.user_pw = 'admin'
         self.ok_error_msg = dict()
+        self.exclude_underscore_params = set()
 
-    def init_ansible(self):
+    def init_ansible(self, required_if=None):
         self.module_args.update(self.basic_module_args)
         result = dict(
             original_message='',
@@ -70,7 +77,8 @@ class PaskModule(object):
 
         module = AnsibleModule(
             argument_spec=self.module_args,
-            supports_check_mode=True
+            supports_check_mode=True,
+            required_if=required_if
         )
         self.result = result
         self.module = module
@@ -85,7 +93,7 @@ class PaskModule(object):
         self.prefix_url = 'https://{0}:{1}/prestapi/v2/conf/'.format(
             self.module.params['prest_ip'], self.module.params['prest_port'])
 
-        self.url = os.path.join(self.prefix_url, self.path_name)
+        self.url = os.path.join(self.prefix_url, self.path_name.replace('_','-'))
 
     def make_delete_data(self, module_name, key, value):
         d = {
@@ -98,7 +106,8 @@ class PaskModule(object):
         for k, v in iteritems(params):
             if k in self.exclude_params:
                 continue
-            k = k.replace('_', '-')
+            if k not in self.exclude_underscore_params:
+                k = k.replace('_', '-')
             if type(v) is dict:
                 if include_inner:
                     inner_dict = self.make_data(v, include_inner)
@@ -118,6 +127,53 @@ class PaskModule(object):
             elif v is not None and v != "None":
                 data.update({k: v})
         return data
+
+    def make_params_query_string(self, params):
+        '''아래 예시와 같이 하위 param 명이 같은 경우는
+        고려되지 않아 검토가 필요합니다.
+        ex) params 값 예시(하위 param - threshold 이름이 같음)
+        {
+            'memory' : [{'threshold' : '1'},{'test' : '1'}]
+            'log_storage' : [{'threshold' : '3'}, {'test1' : '2'}]
+        }
+        '''
+        params_dict = {}
+
+        for parameter, values in params.iteritems():
+            if parameter in self.exclude_params or values is None:
+                continue
+            if isinstance(values, list) and all(
+                isinstance(item, dict) for item in values):
+                for value in values:
+                    params_dict.update(value)
+            elif isinstance(values, dict):
+                raise ValueError(
+                    'Cannot include dict type in params \
+                    that create query string.')
+            else:
+                params_dict[parameter] = values
+
+        return params_dict
+
+    def check_command(self, params, command_list):
+        if isinstance(params, dict):
+            for param, value in params.iteritems():
+                if value is None or param in self.exclude_params:
+                    continue
+                if param in command_list:
+                    return True
+                if isinstance(value, dict):
+                    if self.check_command(value, command_list):
+                        return True
+                elif isinstance(value, list):
+                    for item in value:
+                        if self.check_command(item, command_list):
+                            return True
+        elif isinstance(params, list):
+            for item in params:
+                if self.check_command(item, command_list):
+                    return True
+        return False
 
     def run(self):
         resp = None
@@ -167,5 +223,102 @@ class PaskModule(object):
                 if not self.is_ok_error_msg(self.result['message']):
                     self.result['failed'] = True
         else:
+            if self.resp.status_code // 100 != 2:
+                self.result['failed'] = True
             self.result['message'] = str(resp_dic)
         self.module.exit_json(**self.result)
+
+    def make_real_backup_data(self, data, get_real_data):
+        if len(get_real_data) == 0:
+            return data
+        # real id 값이 key, real의 정보가 value인 dict 생성
+        real_dict = {str(real['id']): real for real in get_real_data['real']}
+        # backup 값이 있는 경우 해당 id의 항목을 data의 real에 추가
+        for real in get_real_data['real']:
+            backup_id = real.get('backup')
+            if backup_id is not None:
+                data.setdefault('real', []).append(real_dict[str(backup_id)])
+        return data
+
+    def get_filter_template(self, ip, protocol=None, vport=None):
+        filter_template = {
+            'type': 'include',
+            'sip': '0.0.0.0/0',
+            'dip': ip + "/32",
+            'protocol': 'all',
+            'status': 'enable'
+        }
+
+        if protocol is not None:
+            filter_template["protocol"] = protocol
+
+        if vport is not None:
+            filter_template["dport"] = vport
+
+        return filter_template
+
+    def make_filter_by_vip(self, vips):
+        # make filter without id
+        filter_list = list()
+        for vip in vips:
+            ip = vip.get('ip')
+            protocols = vip.get('protocol', [])
+
+            # Protocol이 없을 때
+            if len(protocols) == 0:
+                filter_list.append(self.get_filter_template(ip))
+
+            # Protocol이 있을 때
+            for protocol in protocols:
+                protocol_name = protocol.get('protocol')
+                vports = protocol.get('vport', [])
+
+                # Vport가 없을 때
+                if len(vports) == 0:
+                    filter_list.append(
+                        self.get_filter_template(ip, protocol_name))
+
+                # Vport가 있을 때
+                for vport in vports:
+                    filter_list.append(
+                        self.get_filter_template(ip, protocol_name, vport))
+        return filter_list
+
+    def make_filter_data(self, data):
+        # module do not have filter data in playbook script
+        vip_filter = self.make_filter_by_vip(data['vip'])
+
+        if data.get('filter') is None:
+            for _id, vip in enumerate(vip_filter, start=1):
+                vip['id'] = str(_id)
+            return vip_filter
+
+        # module have filter data in playbook script
+        filter_data = list()
+        used_filter_id = list()
+        for param in data['filter']:
+            used_filter_id.append(param['id'])
+
+        f_compare_list = [
+            'type', 'dip', 'sip', 'protocol', 'dport'
+        ]
+
+        append = False
+        for vf in vip_filter:
+            for df in data['filter']:
+                for p in f_compare_list:
+                    if vf.get(p) is None:
+                        continue
+                    if df.get(p) is None:
+                        append = True
+                    if vf[p] != df[p]:
+                        append = True
+            if append:
+                for _id in range(1, 255):
+                    if str(_id) not in used_filter_id:
+                        vf['id'] = str(_id)
+                        filter_data.append(vf)
+                        used_filter_id.append(str(_id))
+                        break
+
+        return filter_data + data['filter']

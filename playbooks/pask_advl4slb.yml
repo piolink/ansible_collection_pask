@@ -1,0 +1,79 @@
+---
+- name: Advl4slb Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Advl4slb(ipv4)
+    pask_advl4slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv4"
+      ip_version: "ipv4"
+      priority: "150"
+      status: "disable"
+      health_check:
+        - "1"
+        - "2"
+      connection_log: "enable"
+      nat_mode: "bnat"
+      lb_method: "wsh"
+      fail_action: "inactive-vips"
+      backup: "test_backup"
+      max_connection: "300"
+      session_reuse: "enable"
+      return_to_sender: "enable"
+      ssl_detection: "enable"
+      timeout: {session_timeout: "100"}
+      real:
+        - {id: "1"}
+        - {id: "2"}
+      vip:
+        - {ip: "1.1.1.1", protocol: [{protocol: "tcp", vport: ["3024","3078"]}]}
+        - {ip: "2.2.2.2", protocol: [{protocol: "udp", vport: ["3124","3178"]}]}
+      sticky: {time: "0", type: "ip", overmax: "enable", destination_subnet: "1.1.1.1", destination_subnet6: "0000:0000:0000:0001::", source_subnet: "255.255.255.0", source_subnet6: "ffff:ffff:ffff:ffff:ffff:ffff::"}
+      ssl: "1"
+      backend_ssl: {status: "enable", profile: "2"}
+      ssl_decrypt_mirroring: {status: "enable", interface: "lan", dmac: "00:1A:2B:3C:4D:5E", dport: "1021", send_delay: "3", tcp_session: {handshake: "disable", teardown: "enable"}, mirror_message: {request: "disable", response: "disable"}}
+      rts_real:
+        - {id: "1", ip: "1.1.1.1", mac: "00:1A:2B:3C:4D:5E", interface: "lan"}
+        - {id: "2", ip: "2.2.2.2", mac: "00:1A:2B:3C:4D:5D", interface: "test"}
+      rate_limiting: {read_timeout: "10", rule: [{id: "1", status: "disable", priority: "1", pattern: "1", bandwidth: "1", direction: "server"}, {id: "2", status: "enable", priority: "5", pattern: "3", bandwidth: "5", direction: "client"}]}
+      vdi_support: "enable"
+      sni_port: "455"
+      snat_addr:
+        - {network: "1.1.1.1/24", nat_ip: "2.2.2.2"}
+
+  - name: Create Advl4slb(ipv6)
+    pask_advl4slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv6"
+      ip_version: "ipv6"
+      vip:
+        - {ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334", protocol: [{protocol: "tcp", vport: ["3024","3078"]}]}
+      sticky: {time: "0", type: "ip", overmax: "enable", destination_subnet: "1.1.1.1", destination_subnet6: "0000:0000:0000:0001::", source_subnet: "255.255.255.0", source_subnet6: "ffff:ffff:ffff:ffff:ffff:ffff::"}
+
+  - name: Delete Advl4slb(ipv4)
+    pask_advl4slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv4"
+      state: "absent"
+
+  - name: Delete Advl4slb(ipv6)
+    pask_advl4slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv6"
+      state: "absent"

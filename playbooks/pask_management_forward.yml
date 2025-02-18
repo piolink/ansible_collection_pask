@@ -1,0 +1,33 @@
+---
+- name: Management Forward Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Management Forward
+    pask_management_forward:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      backup: "enable"
+      dns: "enable"
+      email_alarm: "enable"
+      logging: "enable"
+      ntp: "enable"
+      snmp_trap: "enable"
+      radius: "enable"
+      custom:
+        - id: "1"
+          dip: "1.1.1.1/16"
+          dport: "1000"
+          description: "test"
+
+  - name: Reset Management Forward
+    pask_management_forward:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

@@ -1,0 +1,118 @@
+---
+- name: L7slb Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create L7slb
+    pask_l7slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      status: "enable"
+      keep_backup: "entry"
+      connection_pooling: "disable"
+      server_min_mtu: "1200"
+      health_check:
+        - "1"
+        - "2"
+      urlmanip:
+        - id: "2"
+          priority: "1"
+          rule:
+            - "1"
+            - "2"
+          match: "test1"
+          replace: "test2"
+          https_for_redirect: "enable"
+          status: "enable"
+      age_refresh: "enable"
+      x_header: "enable"
+      priority: "3"
+      fail_action: "inactive-vips"
+      vip:
+        - ip: "1.1.1.1"
+          vport:
+            - "1163"
+            - "1263"
+      group:
+        - name: "test1"
+          real:
+            - id: "1"
+          persist:
+            type: "ip"
+            timeout: "03:15"
+            field:
+              name: "test"
+              length: "50"
+              offset: "30"
+              starter: "testone"
+              terminator: "testtwo"
+            overmax: "disable"
+            destination_subnet: "255.255.255.0"
+            source_subnet: "255.255.255.0"
+          lb_method:
+            type: "sh"
+            urlhash:
+              length: "50"
+              offset: "20"
+              starter: "testone"
+              terminator: "testtwo"
+        - name: "test2"
+          real:
+            - id: "1"
+          persist:
+            type: "cookie"
+            timeout: "03:15"
+            cookie:
+              type: "hash"
+              hash:
+                name: "test"
+                offset: "3"
+                length: "5"
+            field:
+              name: "test"
+              length: "50"
+              offset: "30"
+              starter: "testone"
+              terminator: "testtwo"
+            overmax: "disable"
+          lb_method:
+            type: "sh"
+            urlhash:
+              length: "50"
+              offset: "20"
+              starter: "testone"
+              terminator: "testtwo"
+      rule:
+        - id: "1"
+          priority: "30"
+          pattern: "1"
+          group: "test1"
+          backup_group: "test2"
+          http_status: "307"
+          real: "1"
+          status: "enable"
+          action: "http-response"
+        - id: "2"
+          priority: "50"
+          pattern: "1"
+          group: "test2"
+          backup_group: "test1"
+          http_status: "307"
+          real: "1"
+          status: "enable"
+          action: "http-response"
+
+  - name: Delete L7slb
+    pask_l7slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

@@ -1,0 +1,38 @@
+---
+- name: Tacacs Plus Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Tacacs Plus
+    pask_tacacs_plus:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      server:
+        - {id: "1", ip: "1.2.3.4", status: "disable", description: "testing1"}
+        - {id: "2", ip: "4.5.6.7", status: "enable", description: "testing2"}
+      authentication: "enable"
+      authorization: "enable"
+      accounting: "enable"
+      secret: "admin1234"
+      timeout: "5"
+      service: "test"
+      ssh: "enable"
+      telnet: "enable"
+      console: "enable"
+      web: "enable"
+      prest_api: "enable"
+      root_authentication: "enable"
+      status: "enable"
+      log: "enable"
+
+  - name: Reset Tacacs Plus
+    pask_tacacs_plus:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

@@ -1,0 +1,130 @@
+---
+- name: Advl4cslb Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Advl4cslb(ipv4)
+    pask_advl4cslb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv4"
+      ip_version: "ipv4"
+      priority: "150"
+      status: "disable"
+      health_check:
+        - "1"
+      connection_log: "enable"
+      preserve_src_port: "enable"
+      lb_method: "wrr"
+      backup: "test_backup"
+      max_connection: "300"
+      session_reuse: "enable"
+      return_to_sender: "enable"
+      sni_bypass: "enable"
+      ssl_detection: "enable"
+      timeout:
+        session_timeout: "100"
+      lb_fail_safe: "enable"
+      real:
+        - id: "1"
+      sticky:
+        time: "120"
+        type: "ip"
+        overmax: "enable"
+        destination_subnet: "1.1.1.1"
+        source_subnet: "255.255.255.0"
+      nat:
+        status: "enable"
+        mode: "dnat"
+        sip:
+          - network: "1.1.1.1/24"
+            nat_ip: "1.2.3.4"
+        dip: "5.6.7.8"
+        dport: "30"
+        real: "enable"
+      filter:
+        - id: "1"
+          type: "exclude"
+          protocol: "3"
+          sip: "4.3.2.1/24"
+          dip: "8.7.6.5/24"
+          sport: "8035"
+          dport: "8135"
+          status: "disable"
+          description: "test1"
+      ssl: "1"
+      backend_ssl:
+        status: "enable"
+        profile: "2"
+      ssl_decrypt_mirroring:
+        status: "enable"
+        interface: "lan"
+        dmac: "00:1A:2B:3C:4D:5E"
+        dport: "1021"
+        send_delay: "3"
+        tcp_session:
+          handshake: "disable"
+          teardown: "enable"
+        mirror_message:
+          request: "disable"
+          response: "disable"
+      rts_real:
+        - id: "1"
+          ip: "1.1.1.1"
+          mac: "00:1A:2B:3C:4D:5E"
+          interface: "lan"
+      rate_limiting:
+        read_timeout: "10"
+        rule:
+          - id: "1"
+            status: "disable"
+            priority: "1"
+            pattern: "1"
+            bandwidth: "1"
+            direction: "server"
+      sni_filter:
+        - id: "1"
+          status: "disable"
+          description: "test"
+          match: "exact"
+          sni_string:
+            - "test1"
+      sni_port: "455"
+
+  - name: Create Advl4cslb(ipv6)
+    pask_advl4cslb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv6"
+      ip_version: "ipv6"
+      sticky:
+        time: "120"
+        type: "ip"
+        overmax: "enable"
+        destination_subnet6: "0000:0000:0000:0001::"
+        source_subnet6: "ffff:ffff:ffff:ffff:ffff:ffff::"
+
+  - name: Delete Advl4cslb(ipv4)
+    pask_advl4cslb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv4"
+      state: "absent"
+
+  - name: Delete Advl4cslb(ipv6)
+    pask_advl4cslb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv6"
+      state: "absent"

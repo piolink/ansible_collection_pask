@@ -1,0 +1,29 @@
+---
+- name: Arp Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Arp
+    pask_arp:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      proxy_arp: "enable"
+      proxy_delay: "300"
+      locktime: "300"
+      timeout: "3000"
+      static:
+        - ipaddr: "192.168.214.100"
+          hwaddr: "00:1A:2B:3C:4D:5E"
+          description: "test static"
+
+  - name: Reset Arp
+    pask_arp:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

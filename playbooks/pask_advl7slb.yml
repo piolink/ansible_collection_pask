@@ -1,0 +1,349 @@
+---
+- name: Advl7slb Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Advl7slb(ipv4)
+    pask_advl7slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv4"
+      group:
+        - persist:
+            destination_subnet: "255.255.255.0"
+            destination_subnet6: "0000:0000:0000:0001::"
+            type: "cookie"
+            timeout: "03:57"
+            cookie:
+              type: "insert"
+              name: "test"
+              info_header: "testtwo"
+              domain: "piolink"
+              path: "/target"
+              flags:
+                - "httponly"
+              source: "real-id"
+            session_key: "testone"
+            field:
+              name: "testone"
+              length: "30"
+              offset: "30"
+              starter: "testone"
+              terminator: "testone"
+            overmax: "disable"
+            source_subnet: "255.255.255.0"
+            source_subnet6: "0000:0000:0000:0001::"
+          name: "test_g1"
+          lb_method:
+            type: "urlhash"
+            rtt:
+              base: "body"
+              mode: "current"
+              active_conns: "enable"
+            urlhash:
+              length: "3"
+              offset: "2"
+              starter: "testone"
+              terminator: "testtwo"
+              algorithm: "crc32"
+          connection_pooling:
+            status: "disable"
+            mode: "aggressive"
+            max_reuse: "30"
+            pool_size: "2050"
+            timeout: "30"
+          real:
+            - id: "3"
+        - name: "backup_g1"
+          real:
+            - id: "1"
+      host:
+        - "test1"
+      priority: "50"
+      cache: "1"
+      ssl: "2"
+      http2: "disable"
+      websocket: "disable"
+      x_forwarded_for: "enable"
+      preserve_src_addr: "disable"
+      preserve_src_port: "enable"
+      proxy_protocol: "disable"
+      return_to_sender: "enable"
+      ssl_detection: "enable"
+      ssl_session_cache_sync: "enable"
+      ip_version: "ipv4"
+      prescript: "test"
+      default_server_header: "remove"
+      log:
+        access_log: "enable"
+        connection_log: "enable"
+      timeout:
+        keepalive_timeout: "30"
+        request_header_timeout: "30"
+        request_body_interval: "30"
+      protection:
+        max_rps: "300"
+        get_flooding_protection: "enable"
+        cc_attack_protection: "disable"
+        slowloris_protection: "enable"
+        slowpost_protection: "enable"
+      status: enable
+      health_check:
+        - "1"
+      passive_health_check: "1"
+      urlmanip:
+        - id: "1"
+          status: "enable"
+          priority: "3"
+          manip_type: "domain-only"
+          https_for_redirect: "enable"
+          method: "any"
+          match: "test1"
+          replace: "test1"
+          value: "test1"
+      headermanip:
+        - id: "1"
+          status: "enable"
+          header: "test1"
+          value: "test1"
+      resource_cloaking:
+        - id: "1"
+          mode: "insert"
+          header: "testone"
+          match: "cookie"
+          pattern: "testone"
+          replace: "enable"
+          http_response_status: "404"
+          value: "testone"
+          cookie_path: "/testone"
+          cookie_secure_mode: "insert"
+          cookie_httponly_mode: "insert"
+          cookie_samesite_mode: "insert"
+          cookie_samesite_value: "lax"
+      html:
+        - name: "test"
+          mode: "import"
+          type: "none"
+          description: "test1"
+          url: "ftp://test1:test1234@192.168.226.71/test.html"
+      sure_connect:
+        - id: "1"
+          response_code: "503"
+          ignore_server_error: "enable"
+          rps_check_mode: "client_ip"
+          rps: "300"
+          concurr_req: "300"
+          first_priority: "enable"
+          timeout_correction: "enable"
+          html: "test"
+          url: "test"
+          cookie_expire: "600"
+      surge_protection:
+        - id: "1"
+          base_threshold: "300"
+          upper: "500"
+          throttle_burst: "300"
+          throttle_burst_delay: "enable"
+          queue_size: "0"
+          wait_timeout: "50"
+          throttle: "low"
+          target: "group"
+          rps: "500"
+          dry_run: "enable"
+          syslog_logging:
+            status: "enable"
+            interval: "300"
+      request_buffering:
+        status: "enable"
+        header_buffer_size: "300"
+        body_temp_size: "300"
+        body_max_size: "300"
+      response_buffering:
+        - id: "1"
+          status: "enable"
+          header_buffer_size: "300"
+          body_temp_size: "300"
+          body_max_size: "300"
+          ignore_header: "enable"
+      backend_timeout:
+        - id: "1"
+          response_timeout: "300"
+      top10url:
+        status: "enable"
+        sort: "rtt"
+        time: "4_hours_ago"
+      ssl_decrypt_mirroring:
+        status: "enable"
+        interface: "test_vlan"
+        dmac: "0A:BC:DE:F1:23:45"
+        dport: "3024"
+        send_delay: "3"
+        tcp_session:
+          handshake: "enable"
+          teardown: "enable"
+        mirror_message:
+          request: "enable"
+          response: "enable"
+      user_auth:
+        status: "enable"
+        auth_url: "test"
+        client_id: "piolink"
+        client_secret: "test"
+        redirect_uri: "test"
+        grant_type: "test"
+        token_url: "test"
+        jwks_url: "test"
+        jwt_alg: "HS256"
+        jwt_authkey: "test"
+      error_management:
+        status: "enable"
+        default_error_code: "404"
+        custom_response:
+          status: "enable"
+          error_code:
+            - "400"
+          response_code: "406"
+          response_html: "test"
+          redirect_uri: "test"
+      rts_real:
+        - id: "1"
+          ip: "1.1.1.1"
+          mac: "01:23:45:67:89:AB"
+          interface: "test_vlan"
+      front_end_optimize: "test"
+      rewrite_sub_domains:
+        status: "enable"
+        sub_domains:
+          - "test1"
+      vip:
+        - ip: "1.1.1.1"
+          protocol:
+            - protocol: "http"
+              vport:
+                - "6521"
+            - protocol: "https"
+              vport:
+                - "6541"
+        - ip: "1.1.1.2"
+          protocol:
+            - protocol: "http"
+              vport:
+                - "6561"
+            - protocol: "https"
+              vport:
+                - "6581"
+      snat_addr_type: "interface-addr"
+      snat_addr:
+        - network: "1.1.1.1/24"
+          nat_ip: "1.1.1.1"
+      rule:
+        - id: "1"
+          status: "enable"
+          priority: "30"
+          pattern: "1"
+          error_action: "default"
+          fail_skip: "enable"
+          group: "test_g1"
+          http_status: "504"
+          url: "test"
+          request_scheme: "https"
+          specific_dest: "test"
+          name_resolver: "1.1.1.1"
+          icap: "1"
+          urlmanip:
+            - "1"
+          headermanip:
+            - "1"
+          resource_cloaking:
+            - "1"
+          response_buffering: "1"
+          sure_connect: "1"
+          surge_protection: "1"
+          cache: "1"
+          compression: "1"
+          backend_timeout: "1"
+          adapt_location_scheme: "enable"
+          send_complete_request: "enable"
+          wait_complete_response: "enable"
+          preserve_http_version: "enable"
+          backend_ssl:
+            profile: "1"
+            sni: "enable"
+          ssl_decrypt_mirroring:
+            status: "service"
+            interface: "test_vlan"
+            dmac: "0A:BC:DE:F1:23:45"
+            dport: "3024"
+            send_delay: "3"
+            tcp_session:
+              handshake: "enable"
+              teardown: "enable"
+            mirror_message:
+              request: "enable"
+              response: "enable"
+          connection_pooling:
+            status: "disable"
+            mode: "aggressive"
+            max_reuse: "300"
+            pool_size: "300"
+            timeout: "300"
+          action: "group"
+          snat_addr_type: "interface-addr"
+          snat_addr:
+            - network: "1.1.1.1/24"
+              nat_ip: "1.1.1.1"
+      cookie_encryption:
+        status: "enable"
+        algorithm: "aes-128"
+        mode: "service-and-server"
+        server_cookies:
+          - "test1"
+        protection_action: "block"
+      fail_action: "default"
+
+  - name: Create Advl7slb(ipv6)
+    pask_advl7slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv6"
+      vip:
+        - ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+          protocol:
+            - protocol: "http"
+              vport:
+                - "6521"
+      group:
+        - persist:
+            type: "ip"
+            destination_subnet6: "0000:0000:0000:0001::"
+            source_subnet6: "0000:0000:0000:0001::"
+            session_key: "testone"
+          name: "test_g1"
+          real:
+            - id: "3"
+      ip_version: "ipv6"
+
+  - name: Delete Advl7slb(ipv4)
+    pask_advl7slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv4"
+      state: "absent"
+
+  - name: Delete Advl7slb(ipv6)
+    pask_advl7slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv6"
+      state: "absent"

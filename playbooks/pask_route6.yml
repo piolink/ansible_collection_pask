@@ -1,0 +1,54 @@
+---
+- name: Route6 Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Route6(network-gateway)
+    pask_route6:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      network:
+        - dest: "2001:0db8:85a3:0000:0000:8a2e:0370:7334/64"
+          interface: "test_vlan"
+          type: "dynamic"
+        - dest: "2001:0db8:95a3:0000:0000:8a2e:0370:7334/64"
+          gateway: "2001:db8:85a3::20"
+          type: "dynamic"
+          description: "test"
+      default_gateway:
+        - gateway: "2001:0db8:85a3:0000:0000:8a2e::"
+          health_check:
+            - id: "1"
+          priority: "15"
+
+  - name: Set Route6(network-interface)
+    pask_route6:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      network:
+        - dest: "2001:0db8:85a3:0000:0000:8a2e:0370:7334/64"
+          interface: "test_vlan"
+          type: "dynamic"
+        - dest: "2001:0db8:95a3:0000:0000:8a2e:0370:7334/64"
+          interface: "test_vlan"
+          type: "dynamic"
+          description: "test"
+      default_gateway:
+        - gateway: "2001:0db8:85a3:0000:0000:8a2e::"
+          health_check:
+            - id: "1"
+          priority: "15"
+
+  - name: Reset Route6
+    pask_route6:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

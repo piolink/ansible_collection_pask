@@ -1,0 +1,29 @@
+---
+- name: Lsn Nat64 Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Lsn Nat64
+    pask_lsn_nat64:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      type: "stateless"
+      status: "enable"
+      snat_pool: "1"
+      nat64_prefix: "1"
+      dns64_filter: "1"
+
+  - name: Delete Lsn Nat64
+    pask_lsn_nat64:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

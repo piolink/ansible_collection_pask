@@ -1,0 +1,24 @@
+---
+- name: Port Break Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Port Breakout
+    pask_port_breakout:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "xlg1"
+      next_boot: "10Gx4"
+
+  - name: Reset Port Breakout
+    pask_port_breakout:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "xlg1"

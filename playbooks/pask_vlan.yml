@@ -1,29 +1,30 @@
 ---
-- name: Interface Test
+- name: Vlan Test
   hosts: all
   connection: local
   collections:
   - piolink.pask
 
   tasks:
-  - name: create vlan
+  - name: Create Vlan
     pask_vlan:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
       name: "test_vlan"
-      vid: "2917"
+      vid: "3200"
       port:
-        - name: "ge7"
-          type: "untagged"
+        - name: "ge1"
+          type: "tagged"
+      tbm: "enable"
+      description: "test"
 
-  - name: delete vlan
+  - name: Delete Vlan
     pask_vlan:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
       name: "test_vlan"
-      vid: "2917"
       state: "absent"

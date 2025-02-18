@@ -6,180 +6,56 @@
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-
-DOCUMENTATION = r'''
----
-module: pask_route
-short_description: Configuring route setting
-description:
-    - You can configure route setting of the PAS-K.
-version_added: '2.10'
-author:
-    - Yohan Oh (@piolink-yhoh)
-
-options:
-    prest_ip:
-        description:
-            - Enter the PAS-K IP address.
-        required: true
-        type: str
-    prest_port:
-        description:
-            - Enter the port number of PAS-K used for PREST-API.
-        required: true
-        type: str
-    user_id:
-        description:
-            - Enter the PAS-K user id.
-        required: true
-        type: str
-    user_pw:
-        description:
-            - Enter the PAS-K user password.
-        required: true
-        type: str
-    network:
-        description:
-            - Enter route information for static routing.
-        type: list
-        elements: dict
-
-        suboptions:
-            dest:
-                description:
-                    - Enter the destination ip address.
-                required: true
-                type: str
-            interface:
-                description:
-                    - Enter the interface information for static routing.
-                type: list
-                elements: dict
-
-                suboptions:
-                    interface:
-                        description:
-                            - Enter the VLAN interface name to be routed through to reach the destination.
-                        type: str
-            gateway:
-                description:
-                    - Enter the gateway information for static routing.
-                type: list
-                elements: dict
-
-                suboptions:
-                    gateway:
-                        description:
-                            - Enter the gateway ip address to be routed through to reach the destination.
-                        type: str
-    default_gateway:
-        description:
-            - Enter the default-gateway information.
-        type: list
-        elements: dict
-
-        suboptions:
-            gateway:
-                description:
-                    - Enter the default gateway ip address.
-                required: true
-                type: str
-            health_check:
-                description:
-                    - Enter health-check information for default-gateway.
-                type: list
-                elements: dict
-
-                suboptions:
-                    id:
-                        description:
-                            - Enter the health-check id for default-gateway.
-                        required: true
-                        type: str
-            priority:
-                description:
-                    - Enter the priority of the default gateway.
-                type: str
-
-requirements:
-    - requests
-    - netaddr
-'''
-
-EXAMPLES = r'''
----
-- name: Route Module Test
-  connection: local
-  hosts: targets
-  collections:
-  - piolink.pask
-
-  tasks:
-  - name: Create route
-    pask_route:
-      prest_ip: "{{ansible_host}}"
-      prest_port: "{{ansible_port}}"
-      user_id: "{{user_id}}"
-      user_pw: "{{user_pw}}"
-      default_gateway:
-          - { priority: "100", gateway: "192.168.214.1", health_check: [{id: "1"}] }
-          - { priority: "5", gateway: "192.168.224.1", health_check: [{id: "1"}] }
-      network:
-          - { dest: "10.10.0.0/16",
-              gateway: [
-                {gateway: "10.10.10.1"},
-              ],
-            }
-          - { dest: "10.20.0.0/16",
-              interface: [
-                  {interface: "v2933"},
-                  {interface: "v2944"}
-              ]
-            }
-'''
-
-RETURN = r'''
-#
-'''
-
+from ansible.module_utils.basic import missing_required_lib
+from ansible_collections.piolink.pask.plugins.module_utils.pask_module import PaskModule,\
+    make_module_args, try_except
 try:
     import netaddr
     HAS_NETADDR = True
 except ImportError:
     HAS_NETADDR = False
-
 import json
-from ansible.module_utils.basic import missing_required_lib
-from ansible_collections.piolink.pask.plugins.module_utils.pask_module import PaskModule,\
-    make_module_args, try_except
 
 
-inner_interface_params = ['interface']
-inner_interface_args = make_module_args(inner_interface_params)
-inner_gateway_params = ['gateway']
-inner_gateway_args = make_module_args(inner_gateway_params)
-
-inner_network_args = dict(
-    dest=dict(type='str', required=True),
-    interface=dict(type='list', elements='dict', options=inner_interface_args),
-    gateway=dict(type='list', elements='dict', options=inner_gateway_args)
+network_gateway_health_check_inner_args = dict(
+    id=dict(type='str', required=True)
 )
-
-inner_health_check_args = dict(
-    id=dict(type="str", required=True)
-)
-
-inner_defaultgw_args = dict(
+network_gateway_inner_args = dict(
+    gateway=dict(type='str', required=True),
     priority=dict(type='str'),
+    health_check=dict(type='list', elements='dict',
+                   options=network_gateway_health_check_inner_args)
+)
+network_interface_inner_args = dict(
+    interface=dict(type='str', required=True),
+    priority=dict(type='str'),
+    health_check=dict(type='list', elements='dict',
+                   options=network_gateway_health_check_inner_args)
+)
+
+network_inner_args = dict(
+    dest=dict(type='str', required=True),
+    gateway=dict(type='list', elements='dict',
+                 options=network_gateway_inner_args),
+    interface=dict(type='list', elements='dict',
+                   options=network_interface_inner_args),
+    description=dict(type='str')
+)
+default_gateway_health_check_inner_args = dict(
+    id=dict(type='str', required=True)
+)
+
+default_gateway_inner_args = dict(
     gateway=dict(type='str', required=True),
     health_check=dict(type='list', elements='dict',
-                      options=inner_health_check_args)
+                 options=default_gateway_health_check_inner_args),
+    priority=dict(type='str')
 )
 
 module_args = dict(
-    network=dict(type='list', elements='dict', options=inner_network_args),
+    network=dict(type='list', elements='dict', options=network_inner_args),
     default_gateway=dict(type='list', elements='dict',
-                         options=inner_defaultgw_args)
+                         options=default_gateway_inner_args)
 )
 
 name = 'route'
@@ -201,7 +77,6 @@ class PaskRoute(PaskModule):
         if_list = self.get_if_and_ip(resp_dict['interface'])
 
         route_data = self.make_route_data_from_interface(if_list)
-
         data = self.make_data(self.module.params, include_inner=True)
 
         if data.get('network') is None:
@@ -222,6 +97,8 @@ class PaskRoute(PaskModule):
         """
         if_list = list()
         for interface in data:
+            if interface.get('status') == 'down':
+                continue
             if interface.get('ip') is None:
                 continue
 

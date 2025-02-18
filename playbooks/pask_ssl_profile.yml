@@ -1,0 +1,52 @@
+
+---
+- name: Ssl Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Ssl Profile
+    pask_ssl_profile:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      type: "backend"
+      certificate: "test"
+      sni:
+        server_name: "test1"
+        status: "enable"
+      hsts:
+        status: "enable"
+        max_age: "3153"
+        subdomain: "enable"
+      session_resumption:
+        status: "enable"
+        pool_size: "3000"
+        timeout: "360"
+      ciphers:  "@SPEED"
+      prefer_server_cipher: "enable"
+      cipher_protocols:
+        - "TLSv1.1"
+        - "DTLSv1"
+        - "SSLv3"
+      client_authentication: "1"
+      server_authentication: "1"
+      ocsp_stapling: "1"
+      dhparam: "2048"
+      curve:
+        - "secp521r1"
+        - "prime256v1"
+      description: "test"
+
+  - name: Delete Ssl Profile
+    pask_ssl_profile:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

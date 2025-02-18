@@ -1,0 +1,34 @@
+---
+- name:  link synchronization Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: create link synchronization
+    pask_link_sync:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      link_check_delay: "10"
+      mode: two-way
+      status: enable
+      sync_delay_time: "15"
+      monitor_port:
+        - ge1
+        - ge2
+      sync_port:
+        - ge3
+        - ge4
+
+  - name: delete link synchronization
+    pask_link_sync:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

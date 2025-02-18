@@ -1,0 +1,41 @@
+---
+- name: Layer7 Pattern Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Layer7 Pattern
+    pask_layer7_pattern:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      type: "p2p"
+      description: "test"
+      match: "regex"
+      user_defined: "test"
+      length: "3"
+      offset: "3"
+      string: "test"
+      source_ip: "1.1.1.1/24"
+      dest_ip: "1.10.10.10/24"
+      source_port: "300"
+      dest_port: "500"
+      scheme: "http"
+      version: "http1.1"
+      sni_string:
+        - "test1"
+        - "test2"
+      p2p_protocol: "bittorrent"
+
+  - name: Delete Layer7 Pattern
+    pask_layer7_pattern:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

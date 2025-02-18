@@ -1,0 +1,27 @@
+---
+- name: Multicast Bridge Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Multicast Bridge
+    pask_multicast_bridge:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      type: "forwarding"
+      status: "enable"
+      sip: "1.1.1.1"
+      dip: "10.10.10.10"
+      input_interface: "test_vlan"
+      output_interface: "test_vlan"
+
+  - name: Reset Multicast Bridge
+    pask_multicast_bridge:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

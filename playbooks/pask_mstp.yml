@@ -1,0 +1,90 @@
+---
+- name: Mstp Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Mstp
+    pask_mstp:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      status: "enable"
+      region: "test"
+      revision: "3000"
+      priority: "10"
+      bridge_forward_delay: "10"
+      bridge_hello_time: "3"
+      bridge_max_age: "10"
+      bpdu_guard: "enable"
+      port:
+        - name: "ge1"
+          priority: "10"
+          path_cost: "2000"
+        - name: "ge2"
+        - name: "ge3"
+        - name: "ge4"
+        - name: "ge5"
+        - name: "ge6"
+        - name: "ge7"
+        - name: "ge8"
+        - name: "xg1"
+        - name: "xg2"
+        - name: "xg3"
+        - name: "xg4"
+        - name: "xg5"
+        - name: "xg6"
+        - name: "xg7"
+        - name: "xg8"
+        - name: "xg9"
+        - name: "xg10"
+        - name: "xg11"
+        - name: "xg12"
+        - name: "xg13"
+        - name: "xg14"
+        - name: "xg15"
+        - name: "xg16"
+      instance:
+        - id: "1"
+          vlan:
+            - "test_vlan"
+          msti_priority: "10"
+          port:
+            - name: "ge1"
+              path_cost: "none"
+              priority: "10"
+
+  - name: Reset Mstp
+    pask_mstp:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      port:
+        - name: "ge1"
+        - name: "ge2"
+        - name: "ge3"
+        - name: "ge4"
+        - name: "ge5"
+        - name: "ge6"
+        - name: "ge7"
+        - name: "ge8"
+        - name: "xg1"
+        - name: "xg2"
+        - name: "xg3"
+        - name: "xg4"
+        - name: "xg5"
+        - name: "xg6"
+        - name: "xg7"
+        - name: "xg8"
+        - name: "xg9"
+        - name: "xg10"
+        - name: "xg11"
+        - name: "xg12"
+        - name: "xg13"
+        - name: "xg14"
+        - name: "xg15"
+        - name: "xg16"

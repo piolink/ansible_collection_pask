@@ -1,0 +1,29 @@
+---
+- name: Hosts Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Hosts
+    pask_hosts:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      ip: "1.1.1.1"
+      hostname: "piolink"
+      alias:
+        - "piolink"
+        - "test"
+      description: "test"
+
+  - name: Delete Hosts
+    pask_hosts:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      ip: "1.1.1.1"
+      state: "absent"

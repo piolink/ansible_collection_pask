@@ -1,0 +1,64 @@
+---
+- name: Layer7 Front End Optimize Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Layer7 Front End Optimize
+    pask_layer7_front_end_optimize:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      filter: "custom"
+      description: "test1"
+      html_rewrite:
+        add_head: "disable"
+        convert_meta_tags: "disable"
+        lazyload_images: "disable"
+        defer_javascript: "disable"
+        move_css_to_head: "disable"
+        move_css_above_scripts: "disable"
+        insert_dns_prefetch: "disable"
+      resource_minify:
+        elide_attributes: "disable"
+        remove_comments: "disable"
+        retain_comment: "test"
+        sprite_images: "disable"
+        rewrite_css: "disable"
+        combine_css: "disable"
+        rewrite_javascript: "disable"
+        combine_javascript: "disable"
+        collapse_whitespace: "disable"
+        flatten_css_imports: "disable"
+        inline_import_to_link: "disable"
+        fallback_rewrite_css_urls: "disable"
+        rewrite_style_attributes: "disable"
+      resource_inline: {status: "disable", javascript: "104", css: "105"}
+      cache_lifetime: {status: "enable"}
+      rewrite_images:
+        inline_images: "enable"
+        resize_images: "enable"
+        recompress_images: "enable"
+        resize_rendered_image_dimensions: "enable"
+        recompress_png: "disable"
+        recompress_jpeg: "disable"
+        recompress_webp: "disable"
+        strip_image_meta_data: "disable"
+        strip_image_color_profile: "disable"
+        convert_gif_to_png: "disable"
+        convert_png_to_jpeg: "disable"
+        convert_jpeg_to_webp: "disable"
+        convert_jpeg_to_progressive: "disable"
+
+  - name: Delete Layer7 Front End Optimize
+    pask_layer7_front_end_optimize:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

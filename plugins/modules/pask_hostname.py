@@ -6,104 +6,35 @@
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-
-DOCUMENTATION = r'''
----
-module: pask_hostname
-short_description: Configuring hostname setting
-description:
-    - You can configure hostname setting of the PAS-K.
-version_added: '2.10'
-author:
-    - Yohan Oh (@piolink-yhoh)
-
-options:
-    prest_ip:
-        description:
-            - Enter the PAS-K IP address.
-        required: true
-        type: str
-    prest_port:
-        description:
-            - Enter the port number of PAS-K used for PREST-API.
-        required: true
-        type: str
-    user_id:
-        description:
-            - Enter the PAS-K user id.
-        required: true
-        type: str
-    user_pw:
-        description:
-            - Enter the PAS-K user password.
-        required: true
-        type: str
-    hostname:
-        description:
-            - Enter the hostname of the PAS-K.
-        required: true
-        type: str
-
-requirements:
-    - requests
-'''
-
-EXAMPLES = r'''
----
-- name: Hostname Test
-  hosts: all
-  connection: local
-  collections:
-  - piolink.pask
-
-  tasks:
-  - name: create hostname
-    pask_hostname:
-      prest_ip: "{{ansible_host}}"
-      prest_port: "{{ansible_port}}"
-      user_id: "{{user_id}}"
-      user_pw: "{{user_pw}}"
-      hostname: "switch_ansible"
-
-  - name: rename hostname
-    pask_hostname:
-      prest_ip: "{{ansible_host}}"
-      prest_port: "{{ansible_port}}"
-      user_id: "{{user_id}}"
-      user_pw: "{{user_pw}}"
-      hostname: "switch"
-'''
-
-RETURN = r'''
-#
-'''
-
 from ansible_collections.piolink.pask.plugins.module_utils.pask_module import PaskModule,\
     try_except
 
 
 module_args = dict(
-    hostname=dict(type="str", required=True)
+    hostname=dict(type="str")
 )
+
+required_if = [
+    ("state", "present", ["hostname"])
+    ]
 
 name = 'hostname'
 
 
 class PaskHostname(PaskModule):
-    def __init__(self, name, module_args):
-        super(PaskHostname, self).__init__(name, module_args)
+    def __init__(self, name, module_args, required_if):
+        super(PaskHostname, self).__init__(name, module_args, required_if)
 
     @try_except
     def run(self):
         resp = None
-
         data = self.make_data(self.module.params)
         resp = self.prest.put(self.url, data)
         self.resp = resp
 
 
 def main():
-    hostname = PaskHostname(name, module_args)
+    hostname = PaskHostname(name, module_args, required_if)
     hostname.set_param()
     hostname.run()
     hostname.set_result()

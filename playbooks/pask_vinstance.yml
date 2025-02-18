@@ -1,0 +1,70 @@
+---
+- name: Vinstance Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Vinstance
+    pask_vinstance:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      default_mgmt_ip: "1.1.1.1/24"
+      profile: "test"
+      socket: "1"
+      mcpu:
+        - "1"
+      cpu:
+        - "1"
+      memory: "3"
+      disk: "5"
+      swap: "256"
+      vlan:
+        - "1000"
+      rate_limit: "10Gbps"
+      status: "enable"
+
+  - name: Command Vinstance(repair)
+    pask_vinstance:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      repair: "true"
+      state: "command"
+
+  - name: Delete Vinstance Pre-Processing(status disable)
+    pask_vinstance:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      default_mgmt_ip: "1.1.1.1/24"
+      profile: "test"
+      socket: "1"
+      mcpu:
+        - "1"
+      cpu:
+        - "1"
+      memory: "3"
+      disk: "5"
+      swap: "256"
+      vlan:
+        - "1000"
+      rate_limit: "10Gbps"
+      status: "disable"
+
+  - name: Delete Vinstance
+    pask_vinstance:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

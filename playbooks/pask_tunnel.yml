@@ -1,0 +1,38 @@
+---
+- name: Tunnel Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Tunnel
+    pask_tunnel:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      pppoe:
+        - name: "testing"
+          interface: "test_vlan"
+          user: "test"
+          password: "test1234"
+          status: "disable"
+      description: "test"
+      geneve:
+        - name: "gnv1"
+          vni: "1001"
+          remote_ip: "172.16.11.10"
+          port: "6081"
+      ipip:
+        - name: "ipip0"
+          interface: "v1600"
+          local_ip: "172.10.0.2"
+          remote_ip: "172.10.0.12"
+
+  - name: Reset Tunnel
+    pask_tunnel:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

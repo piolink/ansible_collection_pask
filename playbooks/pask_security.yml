@@ -1,0 +1,166 @@
+---
+- name: Security Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Security
+    pask_security:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      firewall:
+        content:
+          - name: "test1"
+            string: "test"
+            case_sensitive: "disable"
+            offset: "any"
+            depth: "10"
+          - name: "test2"
+            string: "test"
+            case_sensitive: "disable"
+            offset: "10"
+            depth: "any"
+        content_group:
+          - name: "test"
+            content:
+              - "test2"
+            description: "test"
+        filter:
+          - name: "test1"
+            source_port:
+              - operation: "lt"
+                port_num: "10"
+            dest_port:
+              - operation: "gt"
+                port_num: "30"
+            log: "disable"
+            tcp_flag:
+              - "fin"
+              - "syn"
+            tcp_flag_option:
+              - "match"
+            length: "1000"
+            protocol: "tcp"
+            source_ip: "1.1.1.1/24"
+            dest_ip: "10.10.10.10/24"
+            content:
+              - "test1"
+              - "test2"
+            content_group:
+              - "test"
+            action: "blacklist"
+            blacklist_type: "session"
+            blacklist_action: "drop"
+            blacklist_timeout: "50"
+            white_timeout: "30"
+        filter_group:
+          - name: "test"
+            filter:
+              - "test1"
+            description: "test"
+        policy:
+          - name: "test"
+            priority: "300"
+            interface: "test_vlan"
+            status: "enable"
+            filter:
+              - "test1"
+            filter_group:
+              - "test"
+            description: "test"
+      firewall6:
+        content:
+          - name: "test1"
+            string: "test"
+            case_sensitive: "disable"
+            offset: "any"
+            depth: "10"
+          - name: "test2"
+            string: "test"
+            case_sensitive: "disable"
+            offset: "10"
+            depth: "any"
+        content_group:
+          - name: "test"
+            content:
+              - "test2"
+            description: "test"
+        filter:
+          - name: "test1"
+            action:
+              - act: "rate"
+                rate_limit_value: "10"
+            log: "enable"
+            length: "300"
+            protocol: "icmpv6"
+            source_ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334/64"
+            dest_ip: "2003:1db8:85a3:0000:0000:8a2e:0370:7334/64"
+            content:
+              - "test1"
+              - "test2"
+            content_group:
+              - "test"
+            icmpv6_type:
+              - "redirect"
+        filter_group:
+          - name: "test"
+            filter:
+              - "test1"
+            description: "test"
+        policy:
+          - name: "test"
+            priority: "300"
+            interface: "test_vlan"
+            status: "enable"
+            filter:
+              - "test1"
+            filter_group:
+              - "test"
+            description: "test"
+      access:
+        default_policy: "accept"
+        rule:
+          - id: "1"
+            description: "test"
+            status: "enable"
+            interface: "vlan"
+            vlan_name: "test_vlan"
+            protocol: "tcp"
+            source_port:
+              - "1023"
+              - "1010"
+            destination_port:
+              - "1365"
+            policy: "accept"
+            destination_ip: "1.1.1.1/24"
+            source_ip: "10.10.10.10/24"
+            mac_address: "00:1A:2B:3C:4D:5E"
+        rule6:
+          - id: "1"
+            description: "test"
+            status: "enable"
+            interface: "vlan"
+            vlan_name: "test_vlan"
+            protocol: "tcp"
+            source_port:
+              - "1023"
+              - "1010"
+            destination_port:
+              - "1365"
+            policy: "accept"
+            destination_ip: "2004:0db8:85a3:0000:0000:8a2e:0370:7334/64"
+            source_ip: "2002:0db8:85a3:0000:0000:8a2e:0370:7334/64"
+            mac_address: "01:2A:3B:4C:5D:6E"
+      dos_protect:
+        syn_cookies: "enable"
+
+  - name: Reset Security
+    pask_security:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

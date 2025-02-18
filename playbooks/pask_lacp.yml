@@ -1,0 +1,33 @@
+---
+- name: Create lacp Test
+  hosts: all
+  connection: local
+  collections:
+    - piolink.pask
+
+  tasks:
+  - name: Create Lacp
+    pask_lacp:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      num: "1"
+      load_balance: dst-mac
+      port:
+        - mode: passive
+          name: ge2
+          priority: "65535"
+        - mode: active
+          name: ge1
+          priority: "32768"
+      description: "test"
+
+  - name: Delete Lacp
+    pask_lacp:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      num: "1"
+      state: "absent"

@@ -1,0 +1,63 @@
+---
+- name: Tech Assist Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Command Tech Assist(save)
+    pask_tech_assist:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      save: {anonymize : null}
+
+  - name: Command Tech Assist(save-mask)
+    pask_tech_assist:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      save: {anonymize : "mask-high"}
+
+  - name: Command Tech Assist(copy-to-tftp)
+    pask_tech_assist:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      copy_to: {tftp: [{tftp: "192.168.100.1:/home/target", interface: "mgmt"}]}
+
+  - name: Command Tech Assist(copy-to-ftp)
+    pask_tech_assist:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      copy_to: {ftp: [{ftp: "root:admin@192.168.100.1/home/target"}]}
+
+  - name: Command Tech Assist(copy-to-sftp)
+    pask_tech_assist:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      copy_to: {sftp: [{sftp: "root:admin@192.168.100.1/home/target", interface: "mgmt"}]}
+
+  - name: Command Tech Assist(copy-to-scp)
+    pask_tech_assist:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      copy_to: {scp: [{scp: "root:admin@192.168.100.1/home/target"}]}
+
+  - name: Command Tech Assist(clear)
+    pask_tech_assist:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      clear: "true"

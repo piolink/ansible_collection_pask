@@ -1,0 +1,35 @@
+---
+- name: Mac Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Mac
+    pask_mac:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      static:
+        - mac_addr:
+          - mac_addr: "12:34:56:78:90:ab"
+            vid:
+              - vid: "1601"
+                type: "forward"
+          - mac_addr: "12:34:56:78:90:ac"
+            vid:
+              - vid: "1600"
+                type: "discard"
+          port: "ge6"
+      ageing_time: "500"
+      ageing_dmac_hit: "enable"
+      flapping_detection: "enable"
+
+  - name: Reset Mac
+    pask_mac:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

@@ -1,0 +1,79 @@
+---
+- name: Health-check Test
+  hosts: all
+  connection: local
+  vars:
+      - target_ip: "{{ansible_ssh_host}}"
+      - port: "{{ansible_ssh_port}}"
+  collections:
+  - piolink.pask
+
+  tasks:
+
+  - name: Create health-check
+    pask_health_check:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "500"
+      type: "script"
+      half_open: "enable"
+      increase_icmp_id: "enable"
+      interval: "53"
+      mac: "00:06:c4:94:02:27"
+      port: "5004"
+      retry: "2"
+      timeout: "4"
+      recover: "3"
+      status: "disable"
+      graceful_shutdown: "enable"
+      description: "testing"
+      sip: "1.1.1.1"
+      tip: "2.2.2.2"
+      inner_tip: "3.3.3.3"
+      dscp_tip: "4.4.4.4"
+      dip: "5.5.5.5"
+      dscp: "4"
+      send: "5"
+      expect: "test"
+      unexpect: "hi"
+      packets: "3"
+      status_code:
+        - "401"
+        - "404"
+      content_length: "2"
+      uri: "100"
+      host: "piolink"
+      user_agent: "5"
+      filename: "5"
+      tolerance: "5"
+      update_delay: "10"
+      script:
+        - index: "4"
+          command: "open"
+          protocol: "tcp"
+          port: "1024"
+          data: "test1"
+      radius_auth_name: "piolink"
+      radius_auth_passwd: "admin"
+      radius_auth_secret: "test"
+      oid: "132"
+      community: "test"
+      record_type: "AAAA"
+      query: "www.naver.com"
+      version: "tls1.1"
+      sni: "test"
+      validate: "enable"
+      common_name: "value"
+      source_port_min: "20000"
+      source_port_max: "65534"
+
+  - name: Delete health-check
+    pask_health_check:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "500"
+      state: "absent"

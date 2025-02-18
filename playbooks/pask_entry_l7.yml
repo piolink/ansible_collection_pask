@@ -1,0 +1,36 @@
+---
+- name: Entry L7 Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Delete Entry L7(dport)
+    pask_entry_l7:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      dport:
+        - dport: "80"
+      state: "absent"
+
+  - name: Delete Entry L7(service&name)
+    pask_entry_l7:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      service:
+        - service: "advl7slb"
+          name: "s1"
+      state: "absent"
+
+  - name: Delete Entry L7 All
+    pask_entry_l7:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      state: "absent"

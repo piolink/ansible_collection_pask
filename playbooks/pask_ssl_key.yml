@@ -1,0 +1,54 @@
+---
+- name: Ssl Key Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Ssl Key
+    pask_ssl_key:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_key"
+      mode: "generate"
+      type: "rsa"
+      length: "4096"
+      curve: "secp384r1"
+      encryption: "des"
+      passphrase: "test1234"
+
+  - name: Command(export-pem) Ssl Key
+    pask_ssl_key:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_key"
+      export_pem:
+        - server_ip: "192.168.226.71"
+          file_name: "/srv/tftp/test/test_key"
+      state: "command"
+
+  - name: Command(export-der) Ssl Key
+    pask_ssl_key:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_key"
+      export_der:
+        - server_ip: "192.168.226.71"
+          file_name: "/srv/tftp/test/test_key"
+      state: "command"
+
+  - name: Delete Ssl Key
+    pask_ssl_key:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_key"
+      state: "absent"

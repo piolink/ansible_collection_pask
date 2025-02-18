@@ -6,44 +6,121 @@
   - piolink.pask
 
   tasks:
-  - name: Create slb aaaa? ! @ $ % ^
+  - name: Create Slb(ipv4)
     pask_slb:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
-      name: "slb_test"
-      vip:
-          - { ip: "172.118.10.111", protocol: { protocol: "icmp", vport: "1231" }}
-          - { ip: "172.118.10.122" }
-      priority: "25"
-      nat_mode: "dnat"
-      lan_to_lan: "10.10.10.10/24"
-      lb_method: "wlc"
-      real:
-          - { id: "10", rport: "5512", status: "enable", graceful_shutdown: "disable"}
-          - id: "14"
-      health_check:
-          - "100"
-          - "200"
-      slow_start:
-          rate: "7"
-          timer: "444"
-      sticky:
-          time: "4121"
-          source_subnet: "27"
+      name: "test_ipv4"
+      filter:
+        - id: "1"
+          type: "exclude"
+          protocol: "tcp"
+          sip: "1.1.1.1/24"
+          dip: "2.2.2.2/24"
+          sport: "5105"
+          dport: "8198"
+          status: "enable"
+          description: "test filter"
+      dynamic_filter:
+        - id: "1"
+          type: "exclude"
       session_sync: "persistence"
-      fail_skip: "inact"
-      keep_backup: "disable"
-      status: "disable"
-      snatip: "14.14.14.14"
-      state: "present"
+      keep_backup:
+        service: "enable"
+        real: "enable"
+      status: "enable"
+      description: "test slb"
+      real:
+        - id: "1"
+          rport: "5105"
+          backup: "2"
+          status: "enable"
+          graceful_shutdown: "enable"
+          description: "test slb real"
+      health_check:
+        - "100"
+      hc_condition: "any"
+      session_timeout_mode: "service"
+      session_timeout:
+        generic: "300"
+        icmp: "300"
+        icmpv6: "300"
+        udp: "300"
+        udp_stream: "300"
+        tcp_syn_sent: "300"
+        tcp_syn_recv: "300"
+        tcp_established: "4000"
+        tcp_fin_wait: "300"
+        tcp_close_wait: "300"
+        tcp_last_ack: "300"
+        tcp_wait: "300"
+        tcp_close: "300"
+        tcp_unassured: "300"
+      session_reset: "active"
+      active_nodest: "enable"
+      ip_version: "ipv4"
+      sticky:
+        time: "300"
+        source_subnet: "255.255.255.0"
+        destination_subnet: "255.255.255.0"
+      fail_skip: "all"
+      fail_action: "inactive-vips"
+      priority: "3"
+      lb_method: "dp"
+      dynamic_proximity:
+        - name: "test"
+          ratio: "3"
+      backup:
+        - backup: "test"
+          partial_threshold: "3"
+          back_inservice: "3"
+      vip:
+        - ip: "172.118.10.111"
+          protocol:
+            - protocol: "icmp"
+              vport:
+                - "1231"
+                - "1235"
+      nat_mode: "lan-to-lan"
+      lan_to_lan:
+        - "1.1.1.1/24"
+      snatip:
+        - "1.1.1.1"
 
-  - name: delete slb
+  - name: Create Slb(ipv6)
+    pask_slb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test_ipv6"
+      ip_version: "ipv6"
+      sticky:
+          destination_subnet6: "0000:0000:0000:0001::"
+          source_subnet6: "0000:0000:0000:0001::"
+      vip:
+        - ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+          protocol:
+            - protocol: "icmp"
+              vport:
+                - "1231"
+
+  - name: Delete Slb(ipv4)
     pask_slb:
         prest_ip: "{{ansible_ssh_host}}"
         prest_port: "{{ansible_ssh_port}}"
         user_id: "{{user_id}}"
         user_pw: "{{user_pw}}"
-        name: "slb_test"
+        name: "test_ipv4"
+        state: "absent"
+
+  - name: Delete Slb(ipv6)
+    pask_slb:
+        prest_ip: "{{ansible_ssh_host}}"
+        prest_port: "{{ansible_ssh_port}}"
+        user_id: "{{user_id}}"
+        user_pw: "{{user_pw}}"
+        name: "test_ipv6"
         state: "absent"

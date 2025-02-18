@@ -13,25 +13,6 @@ This collection is distributed via [ansible-galaxy](https://galaxy.ansible.com/)
 * requests module
 * netaddr module
 
-# Modules
-The collection provides the following modules:
-
-* `pask_dns` You can configure DNS setting of the PAS-K.
-* `pask_health_check` You can configure health check setting of the PAS-K.
-* `pask_hostname` You can configure hostname setting of the PAS-K.
-* `pask_interface` You can configure interface setting of the PAS-K.
-* `pask_ntp` You can configure NTP client setting of the PAS-K.
-* `pask_prest` You can configure PAS-K setting by using the PREST API.
-* `pask_real`  You can configure real server setting of the PAS-K.
-* `pask_reboot` You can reboot the PAS-K machine.
-* `pask_reset` You can initalize the PAS-K settings.
-* `pask_route` You can configure route setting of the PAS-K.
-* `pask_slb` You can configure SLB setting of the PAS-K.
-* `pask_snmp` You can configure SNMP setting of the PAS-K.
-* `pask_user` You can configure user setting of the PAS-K.
-* `pask_vlan` You can configure vlan setting of the PAS-K.
-* `pask_writememory` You can save PAS-K setting.
-
 # Usage
 The following example is used to configure DNS setting of the PAS-K.
 

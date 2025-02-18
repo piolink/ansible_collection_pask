@@ -1,0 +1,37 @@
+---
+- name: Entry Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Delete Entry(dport)
+    pask_entry:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      dport:
+        - dport: "80"
+      state: "absent"
+
+  - name: Delete Entry(service&name)
+    pask_entry:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      service:
+        - service: "advl7slb"
+      service_name:
+        - name: "s1"
+      state: "absent"
+
+  - name: Delete Entry All
+    pask_entry:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      state: "absent"

@@ -1,0 +1,149 @@
+---
+- name: Dns Service Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Dns Service
+    pask_dns_service:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name_server_ip:
+        - ip: "13.1.1.1"
+          status: "enable"
+      name_server_ip6:
+        - ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+          status: "enable"
+      zone:
+        - zone: "test"
+          status: "enable"
+          soa:
+            mname: "piolink.test1.com"
+            rname: "piolink.test2.com"
+            ttl: "300"
+            refresh: "300"
+            retry: "4000"
+            expire: "300"
+            negative_ttl: "300"
+          description: "test"
+          zone_type: "primary"
+          record:
+            - id: "3"
+              type: "aaaa"
+              host: "piolink.test3.com"
+              ttl: "300"
+              service_ip6: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+              create_reverse_record: "enable"
+              status: "enable"
+          reverse_zone_name: "piolink.test.com.ip6.arpa"
+      reverse_zone:
+        - zone: "piolink.test.com.ip6.arpa"
+          masters:
+            - "10.1.1.1"
+          allow_notify_ip:
+            - "10.1.1.2"
+          transfer_src_ip: "10.1.1.3"
+          status: "enable"
+          description: "test"
+          zone_type: "secondary"
+      options:
+        minimal_response: "enable"
+        lookup_mode: "forward"
+        allow_transfer_mode: "enable"
+        forwarder:
+          - "15.1.1.1"
+        allow_transfer_ip:
+          - "15.1.1.1"
+        transfer_src_ip: "15.1.1.1"
+      dnssec:
+        dnssec_key:
+          - id: "3"
+            type: "zsk"
+            algorithm: "rsasha256"
+            bit: "1024"
+            ttl: "3000"
+            expiration_period: "500"
+            notification_period: "10"
+            description: "test"
+          - id: "4"
+            type: "ksk"
+            algorithm: "rsasha256"
+            bit: "1024"
+            ttl: "3000"
+            expiration_period: "500"
+            notification_period: "10"
+            description: "test"
+        zone:
+          - name: "test"
+            status: "enable"
+            dnssec_key:
+              - id: "3"
+                description: "test"
+              - id: "4"
+                description: "test"
+      log:
+        query: "enable"
+        response: "enable"
+        lb_decision: "enable"
+
+  - name: Command Dns Service Clear-Cache
+    pask_dns_service:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      clear_cache: ""
+
+  - name: Command Dns Service Zone-Transfer
+    pask_dns_service:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      zone_transfer:
+        type: "all"
+
+  - name: Command Zone Zone-Transfer
+    pask_dns_service:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      zone:
+        - zone: "test"
+          status: "enable"
+          zone_transfer: "yes"
+          zone_type: "secondary"
+          masters:
+            - "10.1.1.1"
+          allow_notify_ip:
+            - "10.1.1.2"
+          transfer_src_ip: "10.1.1.3"
+
+  - name: Command Reverse-Zone Zone-Transfer
+    pask_dns_service:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      reverse_zone:
+        - zone: "piolink.test.com.ip6.arpa"
+          masters:
+            - "10.1.1.1"
+          allow_notify_ip:
+            - "10.1.1.2"
+          transfer_src_ip: "10.1.1.3"
+          status: "enable"
+          zone_transfer: "yes"
+          zone_type: "secondary"
+
+  - name: Reset Dns Service
+    pask_dns_service:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

@@ -1,0 +1,26 @@
+---
+- name: Lsn Snat Pool Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Lsn Snat Pool
+    pask_lsn_snat_pool:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      pool: "1.1.1.0/24"
+      proxy_arp_interface: "test_vlan"
+
+  - name: Delete Lsn Snat Pool
+    pask_lsn_snat_pool:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

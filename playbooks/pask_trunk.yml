@@ -1,0 +1,29 @@
+---
+- name: Trunk Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Trunk
+    pask_trunk:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      num: "1"
+      port:
+        - "ge1"
+        - "ge2"
+      load_balance: "src-dst-ip"
+      description: "testing"
+
+  - name: Delete Trunk
+    pask_trunk:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      num: "1"
+      state: "absent"

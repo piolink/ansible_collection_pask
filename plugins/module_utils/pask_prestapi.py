@@ -30,39 +30,40 @@ class PrestApi(object):
 
     def basic_auth(self, username, password):
         return "Basic %s" % base64.b64encode(to_bytes(
-            "%s:%s" % (username, password), errors='surrogate_or_strict'))
+            "%s:%s" % (username, password), errors='surrogate_or_strict')
+        ).decode()
 
     def set_headers(self, username, password):
         self.headers['Authorization'] = self.basic_auth(username, password)
         self.headers['Content-Type'] = 'application/json'
 
-    def get(self, url):
+    def get(self, url, params=None):
         self.used_method.append('get')
-        return requests.get(url, headers=self.headers, verify=False)
+        return requests.get(url, headers=self.headers,
+                            verify=False, params=params)
 
-    def post(self, url, data=None):
+    def post(self, url, data=None, params=None):
         self.used_method.append('post')
         if data is not None:
             return requests.post(url, headers=self.headers, json=data,
-                                 verify=False)
+                                 verify=False, params=params)
         else:
-            return requests.post(url, headers=self.headers, verify=False)
+            return requests.post(url, headers=self.headers,
+                                 verify=False, params=params)
 
-    def put(self, url, data=None):
+    def put(self, url, data=None, params=None):
         self.used_method.append('put')
-        if data:
-            return requests.put(url, headers=self.headers, json=data,
-                                verify=False)
-        else:
-            return requests.put(url, headers=self.headers, verify=False)
+        return requests.put(url, headers=self.headers, json=data,
+                            verify=False, params=params)
 
-    def delete(self, url, data=None):
+    def delete(self, url, data=None, params=None):
         self.used_method.append('delete')
-        if data:
+        if data is not None:
             return requests.delete(url, headers=self.headers, json=data,
-                                   verify=False)
+                                   verify=False, params=params)
         else:
-            return requests.delete(url, headers=self.headers, verify=False)
+            return requests.delete(url, headers=self.headers,
+                                   verify=False, params=params)
 
     def is_exist(self, url, key):
         ret = self.get(os.path.join(url, key))

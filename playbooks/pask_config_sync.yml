@@ -1,0 +1,63 @@
+---
+- name: Config Sync Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Config Sync
+    pask_config_sync:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      filter:
+        - id: "3"
+          status: "enable"
+          type: "include"
+          command_type: "dns-service"
+          command_key: "test"
+          name_server_ip: "exclude"
+          name_server_ip6: "exclude"
+      peer_group:
+        - name: "test"
+          status: "enable"
+          mode: "master"
+          interval: "300"
+          peer:
+            - ip: "13.13.13.13"
+          interface:
+            name: "test_vlan"
+            ip: "1.1.1.1"
+          filter:
+            - id: "3"
+          interval_sync_type: "sync-failover"
+          description: "test"
+
+  - name: Command Config Sync(sync)
+    pask_config_sync:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      sync:
+        - destination: "test"
+          config_type: "startup-config"
+
+  - name: Command Config Sync(diff)
+    pask_config_sync:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      diff:
+        - destination: "test"
+          config_type: "startup-config"
+
+  - name: Reset Config Sync
+    pask_config_sync:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

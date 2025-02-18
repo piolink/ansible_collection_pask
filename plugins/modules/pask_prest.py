@@ -6,89 +6,9 @@
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-
-DOCUMENTATION = r'''
----
-module: pask_prest
-short_description: Configuring PAS-K setting by using the PREST API.
-description:
-    - You can configure PAS-K setting by using the PREST API.
-version_added: '2.10'
-author:
-    - Yohan Oh (@piolink-yhoh)
-
-options:
-    prest_ip:
-        description:
-            - Enter the PAS-K IP address.
-        required: true
-        type: str
-    prest_port:
-        description:
-            - Enter the port number of PAS-K used for PREST-API.
-        required: true
-        type: str
-    user_id:
-        description:
-            - Enter the PAS-K user id.
-        required: true
-        type: str
-    user_pw:
-        description:
-            - Enter the PAS-K user password.
-        required: true
-        type: str
-    uri:
-        description:
-            - Enter the uri to use PREST API.
-        required: true
-        type: str
-    data:
-        description:
-            - Enter the body data to use PREST API.
-            - The data must be in json format.
-        type: str
-    method:
-        description:
-            - Enter the method of PREST API.
-            - The value should be 'get', 'post', 'put' or 'delete'.
-        type: str
-
-requirements:
-    - requests
-'''
-
-EXAMPLES = r'''
----
-- name: Prest Test
-  hosts: all
-  connection: local
-  collections:
-  - piolink.pask
-
-  tasks:
-  - name: Configure terminal setting
-    pask_prest :
-      prest_ip: "{{ansible_host}}"
-      prest_port: "{{ansible_port}}"
-      user_id: "{{user_id}}"
-      user_pw: "{{user_pw}}"
-      uri: "/prestapi/v2/conf/terminal"
-      data: >
-            {
-                "timeout" : "60",
-                "length" : "80"
-            }
-      method: "put"
-'''
-
-RETURN = r'''
-#
-'''
-
-import json
 from ansible_collections.piolink.pask.plugins.module_utils.pask_module import PaskModule,\
     try_except
+import json
 
 
 module_args = dict(

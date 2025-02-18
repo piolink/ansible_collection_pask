@@ -1,32 +1,26 @@
 ---
-- name: User Test
+- name: Prescript Test
   hosts: all
   connection: local
   collections:
   - piolink.pask
 
   tasks:
-  - name: Create User
-    pask_user:
+  - name: Create Prescript
+    pask_prescript:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
-      name: "piolink"
-      description: "Piolink administrator"
-      level: "user"
-      log: "disable"
-      password: "Admin123$"
+      name: "test"
+      import_url: "ftp://tester:test123@1.1.1.1/test.lua"
+      description: "test"
 
-  - name: Delete User
-    pask_user:
+  - name: Delete Prescript
+    pask_prescript:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
-      name: "piolink"
-      description: "Piolink administrator"
-      level: "user"
-      log: "disable"
-      password: "Admin123$"
+      name: "test"
       state: "absent"

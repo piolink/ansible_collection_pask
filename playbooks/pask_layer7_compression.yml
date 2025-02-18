@@ -1,0 +1,28 @@
+---
+- name: Layer7 Compression Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Layer7 Compression
+    pask_layer7_compression:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      status: "enable"
+      content_type: ['test1', 'test2']
+      min_length: "3"
+      level: "5"
+
+  - name: Delete Layer7 Compression
+    pask_layer7_compression:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

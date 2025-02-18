@@ -1,0 +1,66 @@
+---
+- name: Gslb Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Gslb
+    pask_gslb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      zone: "test1"
+      priority: "100"
+      status: "enable"
+      name_server:
+        - id: "1"
+          name: "test1"
+          ip: "1.1.1.1"
+          ip6: "2001:0db8:0000:0042:0000:8a2e:0370:7334"
+          ttl: "30"
+          status: "disable"
+        - id: "2"
+          name: "test2"
+          ip: "1.1.1.2"
+          ip6: "2001:0db8:0000:0046:0000:8a2e:0370:7334"
+          ttl: "100"
+          status: "enable"
+      rule:
+        - {id: "1", host: ["@","www"], ttl: "100", group: "1", status: "enable",
+           description: "test2", failure_rcode_response: "enable", failure_rcode: "formerr"}
+        - {id: "2", host: ['.'], ttl: "30", group: "2", status: "disable",
+           description: "test2", failure_rcode_response: "enable", failure_rcode: "formerr"}
+      group:
+        - id: "1"
+          real:
+            - {id: "1", rport: "3204", svcip: "1.1.1.10", status: "enable"}
+            - {id: "3", rport: "3404", svcip: "1.1.1.15", status: "disable"}
+          lb_method: "mab"
+          description: "test1"
+          geolocation: "city"
+        - id: "2"
+          real:
+            - {id: "2", rport: "3304", svcip: "1.1.1.20", status: "disable"}
+            - {id: "4", rport: "3504", svcip: "1.1.1.25", status: "enable"}
+          lb_method: "mabl"
+          description: "test2"
+          geolocation: "country"
+      health_check:
+        - "1"
+        - "2"
+      inbound_lb_mode: "enable"
+      max_answers: "3"
+      description: "test"
+
+  - name: Delete Gslb
+    pask_gslb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

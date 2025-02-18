@@ -6,35 +6,43 @@
   - piolink.pask
 
   tasks:
-  - name: create interface ip
+  - name: Modify Interface
     pask_interface:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
-      name: "test_vlan"
-      mtu: "750"
-      status: "down"
-      rpf: "loose"
+      name: "test"
+      status: "up"
+      adv_send_advert: "disable"
+      adv_default_lifetime: "3600"
+      min_rtr_adv_interval: "200"
+      max_rtr_adv_interval: "800"
       adv_cur_hop_limit: "100"
-      adv_reachable_time: "5012"
+      adv_reachable_time: "300"
+      adv_retrans_timer: "300"
+      mtu: "2000"
+      arp_ignore: "3"
+      arp_announce: "1"
+      description: "test"
+      rpf: "strict"
       ip:
-          address: "172.118.20.111/32"
-          broadcast: "172.118.20.1"
+        - address: "1.1.1.1/24"
+          broadcast: "1.1.1.255"
           overlapped: "on"
+      ip6:
+        - address: "2001:0db8:85a3:0000:0000:8a2e:0370:7334/64"
+          broadcast: "2001:db8:85a3:0:ffff:ffff:ffff:ffff"
+          adv_on_link: "disable"
+          adv_autonomous: "disable"
+          adv_router_addr: "enable"
+          adv_valid_lifetime: "30000000"
+          adv_preferred_lifetime: "1000000"
 
-  - name: delete interface ip
+  - name: Reset Interface
     pask_interface:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
-      name: "test_vlan"
-      mtu: "750"
-      status: "down"
-      rpf: "loose"
-      state: "absent"
-      ip:
-          address: "172.118.20.111/32"
-          broadcast: "172.118.20.1"
-          overlapped: "on"
+      name: "test"

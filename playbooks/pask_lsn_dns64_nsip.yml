@@ -1,0 +1,23 @@
+---
+- name: Lsn Dns64 Nsip Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Lsn Dns64 Nsip
+    pask_lsn_dns64_nsip:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      nsip:
+        - 2001:0db8:85a3:0000:0000:8a2e:0370:7114
+
+  - name: Reset Lsn Dns64 Nsip
+    pask_lsn_dns64_nsip:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

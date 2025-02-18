@@ -6,7 +6,7 @@
   - piolink.pask
 
   tasks:
-  - name: create dns ip
+  - name: set dns
     pask_dns:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
@@ -15,5 +15,12 @@
       retry: "5"
       timeout: "10"
       id:
-        - { id: "1", ip: "192.168.203.100" }
-        - { id: "2", ip: "8.8.8.8" }
+        - {id: "1", ip: "192.168.203.100"}
+        - {id: "2", ip: "8.8.8.8", description: "testing" }
+
+  - name: reset dns
+    pask_dns:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

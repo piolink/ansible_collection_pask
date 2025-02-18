@@ -1,0 +1,55 @@
+---
+- name: Gwlb Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Gwlb
+    pask_gwlb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      ip_version: "ipv4"
+      name: "test"
+      filter:
+        - {id: "1", type: "exclude", protocol: "3", sip: "4.3.2.1/24", dip: "8.7.6.5/24", sport: "8035", dport: "8135", status: "disable", description: "test1"}
+        - {id: "2", type: "exclude", protocol: "tcp", sip: "1.3.5.7/24", dip: "7.5.3.1/24", sport: "8235", dport: "8335", status: "enable", description: "test2"}
+      dynamic_filter:
+        - {id: "1", type: "exclude"}
+        - {id: "2", type: "include"}
+      session_sync: "all"
+      keep_backup: {service: "enable", real: "enable"}
+      status: "enable"
+      description: "test"
+      real:
+        - {id: "1", rport: "5132", backup: "10", status: "enable", description: "test1"}
+        - {id: "2", rport: "5232", backup: "20", status: "enable", description: "test2"}
+      health_check:
+        - "1"
+        - "2"
+      hc_condition: "any"
+      session_timeout_mode: "service"
+      session_timeout: {generic: "50", icmp: "30", icmpv6: "30", udp: "30", udp_stream: "200", tcp_syn_sent: "30", tcp_syn_recv: "30", tcp_established: "5000", tcp_fin_wait: "30", tcp_close_wait: "30", tcp_last_ack: "30", tcp_wait: "30", tcp_close: "30", tcp_unassured: "30"}
+      session_reset: "active"
+      active_nodest: "enable"
+      sticky: {time: "120", destination_subnet: "255.255.0.0", source_subnet: "255.255.255.0"}
+      fail_skip: "all"
+      priority: "3"
+      lb_method: "dp"
+      dynamic_proximity:
+        - {name: "test1", ratio: "30"}
+        - {name: "test2", ratio: "65000"}
+      backup:
+        - {backup: "test_gwlb", partial_threshold: "10", back_inservice: "10"}
+
+  - name: Delete Gwlb
+    pask_gwlb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

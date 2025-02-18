@@ -1,0 +1,87 @@
+---
+- name: Cslb Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Cslb
+    pask_cslb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      filter:
+        - id: "1"
+          type: "exclude"
+          protocol: "3"
+          sip: "4.3.2.1/24"
+          dip: "8.7.6.5/24"
+          sport: "8035"
+          dport: "8135"
+          status: "disable"
+          description: "test1"
+      dynamic_filter:
+        - id: "1"
+          type: "exclude"
+      session_sync: "all"
+      keep_backup:
+        service: "enable"
+        real: "enable"
+      status: "enable"
+      description: "test"
+      real:
+        - id: "1"
+          rport: "5132"
+          backup: "10"
+          status: "enable"
+          graceful_shutdown: "enable"
+          description: "test1"
+      health_check:
+        - "1"
+      hc_condition: "any"
+      session_timeout_mode: "service"
+      session_timeout:
+        generic: "50"
+        icmp: "30"
+        icmpv6: "30"
+        udp: "30"
+        udp_stream: "200"
+        tcp_syn_sent: "30"
+        tcp_syn_recv: "30"
+        tcp_established: "5000"
+        tcp_fin_wait: "30"
+        tcp_close_wait: "30"
+        tcp_last_ack: "30"
+        tcp_wait: "30"
+        tcp_close: "30"
+        tcp_unassured: "30"
+      session_reset: "active"
+      active_nodest: "enable"
+      sticky:
+        time: "120"
+        destination_subnet: "255.255.0.0"
+        source_subnet: "255.255.255.0"
+      fail_skip: "all"
+      priority: "3"
+      lb_method: "swrr"
+      reverse_only: "enable"
+      recording_cache: "disable"
+      transparent_cache: "disable"
+      reset_reuse_connection: "enable"
+      graceful_reverse_service: "disable"
+      backup:
+        - backup: "test_cslb"
+          partial_threshold: "10"
+          back_inservice: "10"
+
+  - name: Delete Cslb
+    pask_cslb:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

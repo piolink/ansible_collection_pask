@@ -1,0 +1,42 @@
+---
+- name: Ssl Proxy Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Ssl Proxy
+    pask_ssl_proxy:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      priority: "30"
+      ip_version: "ipv4"
+      profile: "1"
+      status: "enable"
+      dest:
+        type: "advl7slb"
+        name: "test"
+        id: "1"
+        ip: "1.1.1.1"
+        port: "3065"
+      filter:
+        - id: "2"
+          status: "enable"
+          type: "exclude"
+          sip: "1.1.1.1/24"
+          sport: "3065"
+          dip: "10.10.10.10/24"
+          dport: "3165"
+
+  - name: Delete Ssl Proxy
+    pask_ssl_proxy:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

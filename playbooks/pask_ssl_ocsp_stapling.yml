@@ -1,0 +1,28 @@
+---
+- name: Ssl Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Ssl Ocsp Stapling
+    pask_ssl_ocsp_stapling:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      uri: "test"
+      import_crt: "192.168.226.71:test/test"
+      verify: "enable"
+      resolver: "1.1.1.1"
+
+  - name: Delete Ssl Ocsp Stapling
+    pask_ssl_ocsp_stapling:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

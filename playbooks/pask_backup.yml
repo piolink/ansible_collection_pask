@@ -1,0 +1,31 @@
+---
+- name: Backup Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Backup
+    pask_backup:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      server_type: "sftp"
+      file:
+        - "running-config"
+      ipaddr: "1.1.1.1"
+      port: "5105"
+      path: "/path"
+      user: "test"
+      password: "admin1234"
+      date: "**/** 23:58"
+      time_stamp: "disable"
+
+  - name: Reset Backup
+    pask_backup:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

@@ -1,0 +1,99 @@
+---
+- name: Ssl Certificate Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Ssl Certificate
+    pask_ssl_certificate:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      key: "test_key"
+      mode: "import"
+      cname: "test1"
+      email: "test@piolink.com"
+      organization: "piolink"
+      organization_unit: "test"
+      country: "kr"
+      certificate_state: "test2"
+      locality: "test3"
+      expiration: "400"
+      import:
+        protocol: "tftp"
+        tftp: "192.168.226.71:/test/test"
+        tftp_port: "69"
+      ca_certificates: "test"
+
+  - name: Command(export-crt) Ssl Certificate
+    pask_ssl_certificate:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      export_crt:
+        - server_ip: "192.168.226.71"
+          file_name: "test/test"
+      state: "command"
+
+  - name: Command(export-csr) Ssl Certificate
+    pask_ssl_certificate:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      export_csr:
+        - server_ip: "192.168.226.71"
+          file_name: "test/test"
+      state: "command"
+
+  - name: Command(export-pfx) Ssl Certificate
+    pask_ssl_certificate:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      export_pfx:
+        - server_ip: "192.168.226.71"
+          file_name: "test/test"
+      state: "command"
+
+  - name: Command(export-pem) Ssl Certificate
+    pask_ssl_certificate:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      export_pem:
+        - server_ip: "192.168.226.71"
+          file_name: "test/test"
+      state: "command"
+
+  - name: Command(export-der) Ssl Certificate
+    pask_ssl_certificate:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      export_der:
+        - server_ip: "192.168.226.71"
+          file_name: "test/test"
+      state: "command"
+
+  - name: Delete Ssl Certificate
+    pask_ssl_certificate:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

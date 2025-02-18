@@ -1,0 +1,25 @@
+---
+- name: Alias Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Alias
+    pask_alias:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      alias_command: "ai"
+      original_command: "access-user"
+
+  - name: Delete Alias
+    pask_alias:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      alias_command: "ai"
+      state: "absent"

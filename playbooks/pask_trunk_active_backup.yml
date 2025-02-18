@@ -1,0 +1,28 @@
+---
+- name: Trunk Active Backup Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Trunk Active Backup
+    pask_trunk_active_backup:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      channel_group: "1"
+      port:
+        - port: "ge1"
+          weight: "1"
+      description: "test"
+
+  - name: Delete Trunk Active Backup
+    pask_trunk_active_backup:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      channel_group: "1"
+      state: "absent"

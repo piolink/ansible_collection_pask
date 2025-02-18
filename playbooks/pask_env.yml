@@ -1,0 +1,43 @@
+---
+- name: Env Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Env
+    pask_env:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      oob: "disable"
+      reply_with_stored_mac: "enable"
+      checksum: "disable"
+      mangle_arp_source_mac: "disable"
+      tcp_flag_validation: "enable"
+      invalid_tcp_forwarding: "deny"
+      ipv6_defrag_off: "enable"
+      ipv6_forwarding: "disable"
+      update_timeout_unreplied_rst: "enable"
+      jumbo_frame: "enable"
+      authenticate_config_mode: "enable"
+      proper_sip_in_multipath_route: "enable"
+      forced_routing_with_specified_interface: "enable"
+      sort_compare: "natural-sort"
+      client_server_boundary: "enable"
+      surge_dryrun_analysis: "enable"
+      top10url_analysis: "enable"
+      tcpdump_timeout: "300"
+      mgmt_ingress_ratelimit: "300"
+      cert_validity: "disable"
+      l2switching_before_portboundary: "disable"
+      ip_acd: "enable"
+
+  - name: Reset Env
+    pask_env:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

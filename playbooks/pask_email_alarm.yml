@@ -1,0 +1,43 @@
+---
+- name: Email Alarm Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Email Alarm
+    pask_email_alarm:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "3"
+      interval: "100"
+      from: "test@piolink.com"
+      to: "test@piolink.com"
+      smtp: "smtp.dooray.com"
+      port: "465"
+      password: "test1234"
+      cpu: "enable"
+      memory: "enable"
+      log_storage: "enable"
+      temperature: "enable"
+      power: "enable"
+      fan: "enable"
+      link: "enable"
+      failover: "enable"
+      health: "enable"
+      dom: "enable"
+      status: "enable"
+      description: "piolink"
+      cert_validity: "enable"
+
+  - name: Delete Email Alarm
+    pask_email_alarm:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "3"
+      state: "absent"

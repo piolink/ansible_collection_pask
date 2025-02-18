@@ -1,0 +1,49 @@
+---
+- name: Auth Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Auth
+    pask_auth:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      user:
+        - name: "piolink"
+          description: "Piolink administrator"
+          level: "user"
+          log: "disable"
+          password: "Admin123$"
+        - name: "root"
+          level: "superuser"
+          password: "admin"
+      password_policy:
+        strong_password:
+          status: "disable"
+          minimum_length: "6"
+          required_character:
+            lowercase: "1"
+            uppercase: "1"
+            numeric: "1"
+            special: "1"
+        lockout:
+          maximum_login_failures: "5"
+          failed_login_timeout: "10"
+        password_duration:
+          maximum_duration: "5"
+          expiration_warning: "1"
+
+  - name: Reset Auth
+    pask_auth:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      user:
+        - name: "root"
+          level: "superuser"
+          password: "admin"

@@ -1,0 +1,51 @@
+---
+- name: Layer7 Cache Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Layer7 Cache
+    pask_layer7_cache:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      status: "enable"
+      size: "16m"
+      expire: "1y2M3w4d5h6m7s8"
+      max_age: [{resp_code: "any", time: "3"}]
+      min_use: "5"
+      method:
+        - "HEAD"
+        - "POST"
+      ignore_header: "expires"
+      content_type:
+        - "test1/piolink1"
+        - "application/*"
+        - "video/x-msvideo"
+      exclude_uri:
+        - "test1"
+        - "test2"
+      lock: {status: "enable", age: "3"}
+
+  - name: Command(purge-cache) Layer7 Cache
+    pask_layer7_cache:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      purge_cache: "true"
+      state: "command"
+
+  - name: Delete Layer7 Cache
+    pask_layer7_cache:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

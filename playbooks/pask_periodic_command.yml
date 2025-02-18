@@ -1,0 +1,29 @@
+---
+- name: Periodic Command Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Periodic Command
+    pask_periodic_command:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      periodic_arp:
+        src_ip: "1.1.1.1"
+        dst_ip: "10.10.10.10"
+        src_mac: "00:11:22:33:44:55"
+        dst_mac: "A1:B2:C3:D4:E5:F6"
+        interface: "test_vlan"
+        interval: "360"
+        status: "enable"
+
+  - name: Reset Periodic Command
+    pask_periodic_command:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

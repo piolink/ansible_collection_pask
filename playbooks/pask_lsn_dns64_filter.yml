@@ -1,0 +1,28 @@
+---
+- name: Lsn Dns64 Filter Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Lsn Dns64 Filter
+    pask_lsn_dns64_filter:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      include_filter:
+        - include: "2001:0db8:85a3:1111:2222:8a2e:1370:7564/64"
+      exclude_filter:
+        - exclude: "2001:0db8:85a3:1111:2222:8a2e:1370:7864/64"
+
+  - name: Delete Lsn Dns64 Filter
+    pask_lsn_dns64_filter:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

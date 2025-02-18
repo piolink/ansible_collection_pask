@@ -1,0 +1,23 @@
+---
+- name: Management Statistics Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Management Statistics
+    pask_management_statistics:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      default: {status: "enable", unit: "second"}
+      client_ip: {status: "enable", interval: "3", max_client: "12000"}
+
+  - name: Reset Management Statistics
+    pask_management_statistics:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

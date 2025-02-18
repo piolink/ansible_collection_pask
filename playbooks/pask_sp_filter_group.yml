@@ -1,0 +1,28 @@
+---
+- name: Sp Filter Group Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Sp Filter Group
+    pask_sp_filter_group:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      sp_filter:
+        - "1"
+        - "2"
+      description: "test"
+
+  - name: Delete Sp Filter Group
+    pask_sp_filter_group:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

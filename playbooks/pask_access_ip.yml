@@ -1,0 +1,26 @@
+---
+- name: Access Ip Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Access Ip
+    pask_access_ip:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "5"
+      ip: "1.1.1.1"
+      description: "test"
+
+  - name: Delete Access Ip
+    pask_access_ip:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "5"
+      state: "absent"

@@ -1,0 +1,47 @@
+---
+- name: Schedule Manager Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Schedule Manager
+    pask_schedule_manager:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      month: "3-12"
+      day: "10-31"
+      week:
+        - "mon"
+        - "fri"
+        - "sun"
+      hour: "11-17"
+      minute: "0-27"
+      second: "34"
+      type: "ssl-certificate-update"
+      description: "test"
+      service_type: "advl7slb"
+      service_name: "test_scheduler"
+      service_status: "enable"
+      group:
+        - {name: "g1", surge_protection: "3"}
+        - {name: "g2", surge_protection: "none"}
+      rule:
+        - {id: "1", status: enable, sure_connect: "3"}
+        - {id: "2", status: enable, sure_connect: "none"}
+      email_alarm: "3"
+      status: "enable"
+      certificate: "test1"
+
+  - name: Delete Schedule Manager
+    pask_schedule_manager:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

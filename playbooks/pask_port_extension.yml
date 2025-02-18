@@ -1,0 +1,22 @@
+---
+- name: Port Extension Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Port Extension
+    pask_port_extension:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      ftp: {port: ["13", "14"], status: "enable", data_port: "enable"}
+
+  - name: Reset Port Extension
+    pask_port_extension:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

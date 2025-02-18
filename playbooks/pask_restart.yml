@@ -1,0 +1,17 @@
+---
+- name: Restart Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Command Restart
+    pask_restart:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      failover:
+        vrrp: "1"
+        vrrp6: "1"

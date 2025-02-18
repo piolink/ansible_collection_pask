@@ -1,0 +1,26 @@
+---
+- name: Vinstance Os Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Vinstance Os
+    pask_vinstance_os:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      profile: "test"
+      path: "http://test.piolink.com/k2/vINSTANCE/PLOS-PASK-vINSTANCE-v2.2.6.3.2"
+      hash: "f89dccf185209c3a8e91862a3bdf91b2045ea3ea2298547f7b976fd978f0b8e1e5997d2ebf7b7a2e8b8aec5843435c3d532d53e6ae1017f607f2fe59ab34ae2b"
+
+  - name: Delete Vinstance Os
+    pask_vinstance_os:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      profile: "test"
+      state: "absent"

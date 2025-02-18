@@ -1,0 +1,61 @@
+---
+- name: Ssl Server Authentication Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Ssl Server Authentication
+    pask_ssl_server_authentication:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      server_name: "test"
+      verify_depth: "2"
+      import_crt: "192.168.226.71:/test/test"
+
+  - name: Command(export-crt) Ssl Server Authentication
+    pask_ssl_server_authentication:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      export_crt:
+        - server_ip: "192.168.226.71"
+          file_name: "test/test"
+      state: "command"
+
+  - name: Command(import-crl) Ssl Server Authentication
+    pask_ssl_server_authentication:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      import_crl: "192.168.226.71:/test/test"
+      state: "command"
+
+  - name: Command(export-crl) Ssl Server Authentication
+    pask_ssl_server_authentication:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      export_crl:
+        - server_ip: "192.168.226.71"
+          file_name: "test"
+      state: "command"
+
+  - name: Delete Ssl Server Authentication
+    pask_ssl_server_authentication:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

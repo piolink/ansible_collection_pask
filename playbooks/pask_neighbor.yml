@@ -1,0 +1,29 @@
+---
+- name: Neighbor Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Neighbor
+    pask_neighbor:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      proxy_ndp: "enable"
+      static:
+        - ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+          mac: "00:11:22:33:44:55"
+      proxy_neighbor:
+        - ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+          interface:
+            - "test_vlan"
+
+  - name: Reset Neighbor
+    pask_neighbor:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

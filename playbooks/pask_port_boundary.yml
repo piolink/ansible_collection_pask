@@ -1,0 +1,69 @@
+---
+- name: Port Boundary Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Port Boundary
+    pask_port_boundary:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "5"
+      promisc: "on"
+      include_mac: "none"
+      protocol: "tcp"
+      sip: "1.1.1.1/24"
+      dip: "1.1.1.2/24"
+      vid: "13"
+      port:
+        - "ge1"
+        - "ge2"
+      sport: "30"
+      dport: "50"
+      status: "disable"
+      type: "exclude"
+      boundary: "all"
+      description: "test1"
+
+  - name: Create Port Boundary(protocol icmp&set include_mac)
+    pask_port_boundary:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "6"
+      promisc: "off"
+      include_mac: "multi-broadcast"
+      protocol: "icmp"
+      sip: "1.1.1.1/24"
+      dip: "1.1.1.2/24"
+      vid: "13"
+      port:
+        - "ge1"
+        - "ge2"
+      status: "disable"
+      type: "exclude"
+      boundary: "all"
+      description: "test1"
+
+  - name: Delete Port Boundary
+    pask_port_boundary:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "5"
+      state: "absent"
+
+  - name: Delete Port Boundary(protocol icmp&set include_mac)
+    pask_port_boundary:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "6"
+      state: "absent"

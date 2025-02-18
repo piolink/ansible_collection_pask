@@ -6,36 +6,100 @@
   - piolink.pask
 
   tasks:
-  - name: Create real
+  - name: Create real(backup)
     pask_real:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
       id: "101"
+      name: "bang"
       rip: "172.16.123.24"
+      backup: "100"
       rport: "5544"
+      ssl_rport: "8544"
       priority: "30"
       weight: "50"
+      mac: "00:06:c5:96:01:21"
       graceful_shutdown: "enable"
       max_connection: "12"
       upload_bandwidth: "100000"
       download_bandwidth: "200000"
-      domain_filter: "1"
+      domain_filter:
+        - "1"
+        - "2"
       pool_size: "100"
       pool_age: "200"
       pool_reuse: "300"
       pool_srcmask: "14"
-      src_natip: "5.4.3.2"
+      surge_base_thr: "10"
+      surge_upper: "30"
+      src_natip:
+        - "5.4.3.2"
+        - "1.2.3.4"
       status: "disable"
-      state: "present"
+      interface: "lan"
+      nat:
+        - id: "10"
+          priority: "10"
+          type: "one-to-one-nat"
+          status: "disable"
+          protocol: "udp"
+          sip: 1.1.1.5/24
+          dip: 1.1.1.6/24
+          sport: "8046"
+          dport: "9032"
+          natip:
+            - "1.1.1.7"
+            - "1.1.1.8"
+          natport:
+            - "8011"
+            - "8012"
+          external_ip: "1.1.10.1"
+          internal_ip: "1.1.10.2"
+      sp_filter:
+        - "1"
+        - "2"
+      sp_filter_group:
+        - "1"
+        - "2"
+      health_check:
+        - id: "1"
+        - id: "2"
+      preemption: "disable"
+      svcip: "6.6.6.6"
+      description: "30"
+      device:
+        - ip: "8.8.8.8"
+          port: "8231"
+          user: "bang"
+          passwd: "admin"
 
-  - name: Delete real
+  - name: Create real(site)
+    pask_real:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "102"
+      name: "bang1"
+      rip: "172.16.123.25"
+      site: "hi"
+
+  - name: Delete real(backup)
     pask_real:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
       id: "101"
-      rip: "172.16.123.24"
+      state: "absent"
+
+  - name: Delete real(site)
+    pask_real:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "102"
       state: "absent"

@@ -6,7 +6,7 @@
   - piolink.pask
 
   tasks:
-  - name: create hostname
+  - name: Create Hostname
     pask_hostname:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
@@ -14,10 +14,10 @@
       user_pw: "{{user_pw}}"
       hostname: "switch_ansible"
 
-  - name: rename hostname
+  - name: Reset Hostname
     pask_hostname:
       prest_ip: "{{ansible_ssh_host}}"
       prest_port: "{{ansible_ssh_port}}"
       user_id: "{{user_id}}"
       user_pw: "{{user_pw}}"
-      hostname: "switch"
+      state: "absent"

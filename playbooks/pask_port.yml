@@ -1,0 +1,66 @@
+---
+- name: Port Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Modify Copper Port
+    pask_port:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "ge1"
+      auto_nego: "disable"
+      speed: "100"
+      duplex: "full"
+      flow_ctrl: "off"
+      mdi_mdix: "mdi"
+      status: "enable"
+      sfp_mode: "--"
+      packet_buffer: "--"
+
+  - name: Modify Fiber Port
+    pask_port:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "xg1"
+      auto_nego: "disable"
+      speed: "1000"
+      flow_ctrl: "off"
+      status: "enable"
+      sfp_mode: "normal"
+      packet_buffer: "--"
+      jumbo_frame: "enable"
+      description: "Configuration Port"
+      mdi_mdix: "--"
+      duplex: "--"
+      flood_rate:
+        broadcast: "1500"
+        dlf: "1500"
+        multicast: "1500"
+
+  - name: Reset Copper Port
+    pask_port:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "ge1"
+      sfp_mode: "--"
+      packet_buffer: "--"
+
+  - name: Reset Fiber Port
+    pask_port:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "xg1"
+      packet_buffer: "--"
+      mdi_mdix: "--"
+      duplex: "--"

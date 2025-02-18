@@ -1,0 +1,17 @@
+---
+- name: Clear Statistics Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Command Clear Statistics
+    pask_clear_statistics:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      clear_statistics:
+        - type: "slb"
+          name: "test"

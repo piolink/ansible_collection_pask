@@ -1,0 +1,29 @@
+---
+- name: Mirroring Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Mirroring
+    pask_mirroring:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      description: Configurate Mirroring
+      mirrored:
+      - mirrored: ge7
+        direction: both
+      monitor: ge2
+
+  - name: Delete Mirroring
+    pask_mirroring:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      description: Configurate Mirroring
+      monitor: ge2
+      state: absent

@@ -1,0 +1,22 @@
+---
+- name: Lacp-system Test
+  hosts: all
+  connection: local
+  collections:
+    - piolink.pask
+
+  tasks:
+  - name: Set lacp system
+    pask_lacp_system:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      priority: "65535"
+
+  - name: Reset Lacp system
+    pask_lacp_system:
+      prest_ip: "{{ansible_host}}"
+      prest_port: "{{ansible_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

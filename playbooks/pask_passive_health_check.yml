@@ -1,0 +1,36 @@
+---
+- name: Passive Health Check Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Passive Health Check
+    pask_passive_health_check:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "3"
+      type: "http"
+      check_type:
+        - "500"
+        - "invalid_header"
+      failures: "5"
+      failures_interval: "15"
+      response_time: "5"
+      retry_time: "0"
+      check_until_up: "enable"
+      failnext: {time: "30", count: "5", client_error: "404", request_data: "enable"}
+      status: "enable"
+      description: "test"
+
+  - name: Delete Passive Health Check
+    pask_passive_health_check:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "3"
+      state: "absent"

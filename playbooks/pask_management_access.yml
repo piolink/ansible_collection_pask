@@ -1,0 +1,26 @@
+---
+- name: Management Access Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Management Access
+    pask_management_access:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      ssh: {status: "enable", port: "1556", security_level: "low"}
+      telnet: {status: "enable", port: "1056"}
+      http: {status: "enable", port: "1256"}
+      https: {status: "enable", port: "1534", ssl: "3"}
+      prest_api: {ssl: "5", port: "9556", status: "enable", cipher_protocols: "TLSv1.1"}
+
+  - name: ReSet Management Access
+    pask_management_access:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"

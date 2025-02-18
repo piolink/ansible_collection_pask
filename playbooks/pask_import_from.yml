@@ -1,0 +1,43 @@
+---
+- name: Import From Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Command Import From(tftp)
+    pask_import_from:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      import_from:
+        - file: "startup-config"
+          tftp:
+            - tftp: "192.168.100.1:/home/target"
+              interface: "mgmt"
+
+  - name: Command Import From(sftp)
+    pask_import_from:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      import_from:
+        - file: "startup-config"
+          sftp:
+            - sftp: "root:admin@192.168.100.1/home/target"
+              interface: "mgmt"
+
+  - name: Command Import From(scp)
+    pask_import_from:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      import_from:
+        - file: "startup-config"
+          scp:
+            - scp: "root:admin@192.168.100.1/home/target"
+              interface: "mgmt"

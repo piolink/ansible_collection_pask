@@ -1,0 +1,26 @@
+---
+- name: Ssl Ca Ceritificate Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Ssl Ca Ceritifcate
+    pask_ssl_ca_certificate:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      mode: "copy-cli"
+      copy_crt: "-----BEGIN CERTIFICATE-----MIIBYDCCAQUCFFOYlGFF01OQbbjfHBrxbhxdkEe4MAoGCCqGSM49BAMCMDIxETAPBgNVBAMMCHRlc3QuY29tMRAwDgYDVQQKDAdwaW9saW5rMQswCQYDVQQGEwJrcjAeFw0yNDAyMjAwMTAyNThaFw0yNTAyMTkwMTAyNThaMDIxETAPBgNVBAMMCHRlc3QuY29tMRAwDgYDVQQKDAdwaW9saW5rMQswCQYDVQQGEwJrcjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCxiyM97t922iIR5M4/RJvKBY1c73vbFA9apFeu3Li9Z6+0peMNaCjLVIiv2TzuKXv+OIyBdNs0B1Hwg7c0pg2MwCgYIKoZIzj0EAwIDSQAwRgIhAPFGDWY0deCZVDYzfBIOObQEVYfgu90G0TZa0KLpbXrKAiEA1DIA3dR3XeMcuDz4Zdeu8LPRxcNOU/uYWS7yVhRZwCg=-----END CERTIFICATE-----"
+
+  - name: Delete Ssl Ca Ceritifcate
+    pask_ssl_ca_certificate:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      name: "test"
+      state: "absent"

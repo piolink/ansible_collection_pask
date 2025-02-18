@@ -1,0 +1,41 @@
+---
+- name: DHCP Server Test
+  hosts: all
+  connection: local
+  collections:
+    - piolink.pask
+
+  tasks:
+    - name: Set DHCP Server
+      pask_dhcp_server:
+        prest_ip: "{{ansible_host}}"
+        prest_port: "{{ansible_port}}"
+        user_id: "{{user_id}}"
+        user_pw: "{{user_pw}}"
+        status: "enable"
+        interface:
+          - "lan"
+        subnet:
+          - {
+              id: "1",
+              subnet: "1.1.1.0/24",
+              lease_time: "1000",
+              default_gateway: "1.1.1.1",
+              dns: ["8.8.8.8", "8.8.4.4"],
+              range: [{ id: "1", ip: "1.1.1.2-1.1.1.100" }],
+              fixedaddr:
+                [
+                  {
+                    hostname: "test",
+                    client_mac: "12:34:56:78:90:AB",
+                    client_ip: "1.1.1.10",
+                  },
+                ],
+            }
+
+    - name: Reset DHCP Server
+      pask_dhcp_server:
+        prest_ip: "{{ansible_host}}"
+        prest_port: "{{ansible_port}}"
+        user_id: "{{user_id}}"
+        user_pw: "{{user_pw}}"

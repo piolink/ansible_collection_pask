@@ -1,0 +1,43 @@
+---
+- name: Export To Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Command Export To(tftp)
+    pask_export_to:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      export_to:
+        - file: "config-slot1"
+          tftp:
+            - tftp: "192.168.100.1:/home/target"
+              interface: "mgmt"
+
+  - name: Command Export To(sftp)
+    pask_export_to:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      export_to:
+        - file: "config-slot1"
+          sftp:
+            - sftp: "root:admin@192.168.100.1/home/target"
+              interface: "mgmt"
+
+  - name: Command Export To(scp)
+    pask_export_to:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      export_to:
+        - file: "config-slot1"
+          scp:
+            - scp: "root:admin@192.168.100.1/home/target"
+              interface: "mgmt"

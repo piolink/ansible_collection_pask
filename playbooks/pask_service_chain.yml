@@ -1,0 +1,39 @@
+---
+- name: Service Chain Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Create Service Chain
+    pask_service_chain:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      filter:
+        - id: "1"
+          type: "include"
+          protocol: "all"
+          sip: "1.1.1.1/24"
+          dip: "2.2.2.2/24"
+          sport: "5105"
+          dport: "5505"
+          description: "test"
+      path:
+        - id: "1"
+          name: "test"
+          type: "slb"
+          input_interface: "test_vlan"
+          description: "test2"
+
+  - name: Delete Service Chain
+    pask_service_chain:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      id: "1"
+      state: "absent"

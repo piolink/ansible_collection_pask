@@ -1,0 +1,35 @@
+---
+- name: Tcp Tuning Test
+  hosts: all
+  connection: local
+  collections:
+  - piolink.pask
+
+  tasks:
+  - name: Set Tcp Tuning
+    pask_tcp_tuning:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
+      congestion_control:
+        window_scaling: "disable"
+        ecn: "both"
+        timestamps: "disable"
+      recovery:
+        sack: "disable"
+        dsack: "disable"
+        frto: "basic"
+        retransmission: "10"
+        reordering: "5"
+      socket_buffer:
+        receive_buffer: "100000"
+        send_buffer: "20000"
+        dynamic_receive: "disable"
+
+  - name: Reset Tcp Tuning
+    pask_tcp_tuning:
+      prest_ip: "{{ansible_ssh_host}}"
+      prest_port: "{{ansible_ssh_port}}"
+      user_id: "{{user_id}}"
+      user_pw: "{{user_pw}}"
